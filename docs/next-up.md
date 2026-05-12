@@ -4,7 +4,7 @@ A short, ordered game plan for the next few sessions, plus a ready-to-paste prom
 
 ## Where we are
 
-The first content pass is shipped on `main` (commit `d524533`).
+The first content pass and Phase 1 (Vercel deploy) are shipped on `main`. Production: https://hotrod.robotostudio.com.
 
 - Astro 6 + MDX + Tailwind v4 + `@tailwindcss/typography`.
 - Three strict Zod content collections: `pages`, `blog`, `authors`. Defined in `src/content.config.ts`.
@@ -25,17 +25,18 @@ These are persisted in agent memory; they're repeated here so anyone reading thi
 - **`public/` is chrome only.** Favicons, manifest, robots, OG fallback. Content media (images, video) lives in **Vercel Blob** (images) and **Mux** (video). Schemas reference external storage, not local paths.
 - **No tests framework** is configured. Verification is `pnpm astro check` (types) + `pnpm build` (route generation + schema validation) + Playwright smoke. Don't add vitest unless a real need shows up.
 
-## Phase 1 — Deploy to Vercel
+## Phase 1 — Deploy to Vercel ✅
 
-**Why first:** quick win, gives a preview URL per push, and is required before Phase 2 (Vercel Blob needs a linked Vercel project).
+Shipped 2026-05-12. Production at https://hotrod.robotostudio.com.
 
-**Scope:**
-- `vercel link` and create the Vercel project pointing at `github.com/robotostudio/hotrod`.
-- Confirm Astro static build deploys cleanly.
-- Add a production domain when ready (deferred — preview URL is fine for now).
-- No env vars needed yet — that comes in Phase 2.
+What landed:
+- `@astrojs/vercel` adapter installed in static mode with `imageService: true`.
+- Vercel project `roboto-pro/hotrod` wired to GitHub for auto-deploys; `main` → production.
+- `.env.example` + hardened `.gitignore`; canonical env store is Vercel.
+- README "Deploying" section documents the workflow.
 
-**Out of scope:** any framework changes. Astro's static output already plays well with Vercel.
+Spec: `docs/superpowers/specs/2026-05-12-vercel-deploy-design.md`
+Plan: `docs/superpowers/plans/2026-05-12-vercel-deploy.md`
 
 ## Phase 2 — Media support
 
