@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/base-layout.astro';
+import { getPublishedAuthors } from '../../lib/content';
+
+const authors = await getPublishedAuthors();
+---
+
+<BaseLayout title="Authors" description="People writing on Hotrod.">
+  <article class="prose prose-slate">
+    <h1>Authors</h1>
+  </article>
+  <ul class="mt-8 space-y-6">
+    {authors.map((author) => (
+      <li>
+        <a href={`/authors/${author.id}`} class="text-xl font-semibold hover:underline">
+          {author.data.name}
+        </a>
+        {author.data.role && (
+          <p class="text-sm uppercase tracking-wide text-slate-500">{author.data.role}</p>
+        )}
+        <p class="mt-1 text-slate-700">{author.data.shortBio}</p>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>

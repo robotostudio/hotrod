@@ -1,0 +1,26 @@
+---
+import AuthorLayout from '../../layouts/author-layout.astro';
+import { getPublishedAuthors, getPublishedPosts } from '../../lib/content';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const [authors, posts] = await Promise.all([
+    getPublishedAuthors(),
+    getPublishedPosts(),
+  ]);
+  return authors.map((author) => ({
+    params: { slug: author.id },
+    props: {
+      author,
+      posts: posts.filter((post) => post.data.author.id === author.id),
+    },
+  }));
+}
+
+const { author, posts } = Astro.props;
+const { Content } = await render(author);
+---
+
+<AuthorLayout author={author} posts={posts}>
+  <Content />
+</AuthorLayout>
