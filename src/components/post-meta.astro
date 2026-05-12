@@ -1,0 +1,20 @@
+---
+import { formatDate } from '../lib/format-date';
+
+type Props = {
+  publishedAt: Date;
+  updatedAt?: Date;
+};
+
+const { publishedAt, updatedAt } = Astro.props;
+---
+
+<p class="text-sm text-slate-500">
+  <span>Published {formatDate(publishedAt)}</span>
+  {updatedAt && (
+    <>
+      <span class="mx-2">·</span>
+      <span>Updated {formatDate(updatedAt)}</span>
+    </>
+  )}
+</p>

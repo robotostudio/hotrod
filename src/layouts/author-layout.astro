@@ -1,0 +1,44 @@
+---
+import BaseLayout from './base-layout.astro';
+import type { CollectionEntry } from 'astro:content';
+
+type Props = {
+  author: CollectionEntry<'authors'>;
+  posts: CollectionEntry<'blog'>[];
+};
+
+const { author, posts } = Astro.props;
+const { name, role, shortBio, social } = author.data;
+---
+
+<BaseLayout title={name} description={shortBio}>
+  <article class="prose prose-slate">
+    <h1>{name}</h1>
+    {role && <p class="text-sm uppercase tracking-wide text-slate-500">{role}</p>}
+    <p class="lead">{shortBio}</p>
+    <slot />
+    {Object.keys(social).length > 0 && (
+      <ul>
+        {social.twitter && <li><a href={`https://twitter.com/${social.twitter}`}>Twitter</a></li>}
+        {social.github && <li><a href={`https://github.com/${social.github}`}>GitHub</a></li>}
+        {social.linkedin && <li><a href={`https://linkedin.com/in/${social.linkedin}`}>LinkedIn</a></li>}
+        {social.website && <li><a href={social.website}>Website</a></li>}
+      </ul>
+    )}
+  </article>
+  {posts.length > 0 && (
+    <section class="mt-12">
+      <h2 class="text-2xl font-semibold">Posts by {name}</h2>
+      <ul class="mt-4 space-y-3">
+        {posts.map((post) => (
+          <li>
+            <a href={`/blog/${post.id}`} class="font-medium hover:underline">
+              {post.data.title}
+            </a>
+            <p class="text-sm text-slate-500">{post.data.description}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</BaseLayout>
