@@ -19,13 +19,35 @@ The dev server runs at `http://localhost:4321`.
 /
 ├── public/
 ├── src/
-│   └── pages/
-│       └── index.astro
+│   ├── components/
+│   ├── content/
+│   │   ├── authors/
+│   │   ├── blog/
+│   │   └── pages/
+│   ├── content.config.ts
+│   ├── layouts/
+│   ├── lib/
+│   ├── pages/
+│   └── styles/
 ├── astro.config.mjs
 └── package.json
 ```
 
-Astro serves `.astro` and `.md` files in `src/pages/` as routes based on file name. Static assets live in `public/`.
+Static assets live in `public/`. Content lives in `src/content/`. Routes in `src/pages/` query the content collections and render them through the layouts in `src/layouts/`.
+
+## Content
+
+All site content lives under `src/content/` and is validated by strict Zod schemas defined in `src/content.config.ts`.
+
+| Collection | Path | URL pattern |
+| --- | --- | --- |
+| `pages` | `src/content/pages/**/*.mdx` | `/`, `/about`, `/services/astro`, … |
+| `blog` | `src/content/blog/*.mdx` | `/blog/[slug]` |
+| `authors` | `src/content/authors/*.mdx` | `/authors/[slug]` |
+
+The dev server reflects new entries automatically. Drafts (`draft: true`) render in development but are excluded from production builds.
+
+If you typo a frontmatter key, omit a required field, or reference an author that doesn't exist, the build fails with a clear error. This is intentional — Hotrod is built to be driven by an agent on behalf of a non-technical user, and silent failures are worse than loud ones.
 
 ## Commands
 
