@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/base-layout.astro';
+import { getPublishedPosts } from '../../lib/content';
+import { formatDate } from '../../lib/format-date';
+
+const posts = await getPublishedPosts();
+---
+
+<BaseLayout title="Blog" description="Writing from the Hotrod team.">
+  <article class="prose prose-slate">
+    <h1>Blog</h1>
+  </article>
+  <ul class="mt-8 space-y-6">
+    {posts.map((post) => (
+      <li>
+        <a href={`/blog/${post.id}`} class="text-xl font-semibold hover:underline">
+          {post.data.title}
+        </a>
+        <p class="text-sm text-slate-500">{formatDate(post.data.publishedAt)}</p>
+        <p class="mt-1 text-slate-700">{post.data.description}</p>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>
