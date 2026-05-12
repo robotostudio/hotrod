@@ -72,6 +72,40 @@ All commands run from the project root.
 | `pnpm preview`    | Preview the production build locally         |
 | `pnpm astro ...`  | Run Astro CLI commands (`astro add`, `astro check`, etc.) |
 
+## Deploying
+
+Hotrod deploys to Vercel. The production site is at [hotrod.robotostudio.com](https://hotrod.robotostudio.com).
+
+| Branch | Result |
+| :--- | :--- |
+| `main` | Production deploy at `hotrod.robotostudio.com` |
+| Any other branch | Preview deploy at `hotrod-git-<branch>-roboto-pro.vercel.app` |
+
+Pushes are auto-deployed via Vercel's GitHub integration. There is no separate CI step to configure.
+
+### Environment variables
+
+Real env values live in the Vercel project (`roboto-pro/hotrod`) and are never committed. `.env.example` lists the key names.
+
+To sync them locally:
+
+```sh
+pnpm dlx vercel env pull .env.local
+```
+
+This writes the current Development-environment values to `.env.local`, which is gitignored.
+
+To add or update an env var, use the Vercel dashboard or `pnpm dlx vercel env add <NAME> <environment>` — never paste values into chat or commit them to the repo.
+
+### Local preview of the production build
+
+```sh
+pnpm build
+pnpm preview
+```
+
+`pnpm preview` serves the contents of `dist/` so you can sanity-check the production build before pushing.
+
 ## License
 
 MIT © Roboto Studio
