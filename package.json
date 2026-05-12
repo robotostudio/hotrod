@@ -2,9 +2,16 @@
   "name": "hotrod",
   "type": "module",
   "version": "0.0.1",
+  "description": "Roboto Studio's open-source, agent-first website starter.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robotostudio/hotrod.git"
+  },
+  "license": "MIT",
   "engines": {
     "node": ">=22.12.0"
   },
+  "packageManager": "pnpm@10.28.0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
