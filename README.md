@@ -49,6 +49,17 @@ The dev server reflects new entries automatically. Drafts (`draft: true`) render
 
 If you typo a frontmatter key, omit a required field, or reference an author that doesn't exist, the build fails with a clear error. This is intentional — Hotrod is built to be driven by an agent on behalf of a non-technical user, and silent failures are worse than loud ones.
 
+## Media
+
+Content media (post hero images, author avatars, embedded video) is **not** stored in the repo.
+
+- Images → [Vercel Blob](https://vercel.com/docs/vercel-blob)
+- Video → [Mux](https://mux.com/)
+
+`public/` is reserved for site chrome only: favicons, `manifest.json`, `robots.txt`, and an Open Graph fallback image. Frontmatter fields that point at media will reference external storage (blob keys or Mux playback IDs), not local file paths.
+
+Media support isn't wired up yet — the first content pass is text-only.
+
 ## Commands
 
 All commands run from the project root.
