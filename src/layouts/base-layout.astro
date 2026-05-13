@@ -2,6 +2,8 @@
 import '../styles/global.css';
 import { Font } from 'astro:assets';
 import CheckerboardDivider from '../components/checkerboard-divider.astro';
+import SiteNav from '../components/site-nav.astro';
+import SiteFooter from '../components/site-footer.astro';
 
 type Props = {
   title: string;
@@ -43,15 +45,7 @@ const {
     )}
   </head>
   <body class="min-h-screen bg-background text-foreground font-sans antialiased">
-    <header class="bg-primary text-primary-foreground">
-      <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <a href="/" class="text-2xl font-black tracking-tight">HOTROD</a>
-        <div class="flex items-center gap-8 font-bold">
-          <a href="/blog" class="hover:underline underline-offset-4">Blog</a>
-          <a href="/authors" class="hover:underline underline-offset-4">Authors</a>
-        </div>
-      </nav>
-    </header>
+    <SiteNav />
 
     <CheckerboardDivider />
 
@@ -59,8 +53,8 @@ const {
       <slot />
     </main>
 
-    <footer class="bg-primary text-primary-foreground text-center py-6 font-bold">
-      Built with Hotrod.
-    </footer>
+    <SiteFooter />
+
+    <CheckerboardDivider />
   </body>
 </html>
