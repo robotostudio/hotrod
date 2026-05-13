@@ -1,6 +1,22 @@
 ---
-type Props = { type: 'figures' };
+import CheckerboardDivider from '../../components/checkerboard-divider.astro';
+
+type Props = {
+  type: 'figures';
+  items: { value: string; label: string }[];
+};
+
+const { items } = Astro.props;
 ---
-<section data-block-stub="figures" class="border border-dashed border-foreground/30 px-6 py-8 text-sm">
-  figures (placeholder)
+<CheckerboardDivider />
+<section class="bg-foreground text-background py-16 px-6">
+  <div class="mx-auto max-w-7xl grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    {items.map((item) => (
+      <div>
+        <div class="text-4xl md:text-5xl font-black">{item.value}</div>
+        <div class="text-lg font-semibold mt-2">{item.label}</div>
+      </div>
+    ))}
+  </div>
 </section>
+<CheckerboardDivider />
