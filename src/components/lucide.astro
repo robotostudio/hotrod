@@ -1,0 +1,11 @@
+---
+import { Icon } from 'astro-icon/components';
+
+type Props = {
+  name: string;
+  class?: string;
+};
+
+const { name, class: className } = Astro.props;
+---
+<Icon name={`lucide:${name}`} class={className} />
