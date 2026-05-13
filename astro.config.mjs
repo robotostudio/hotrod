@@ -3,6 +3,7 @@ import { defineConfig, fontProviders } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
+import icon from 'astro-icon';
 
 // https://astro.build/config
 export default defineConfig({
@@ -10,7 +11,7 @@ export default defineConfig({
   adapter: vercel({
     imageService: true,
   }),
-  integrations: [mdx()],
+  integrations: [mdx(), icon()],
   vite: {
     plugins: [tailwindcss()],
   },
