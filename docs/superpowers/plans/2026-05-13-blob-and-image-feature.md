@@ -139,12 +139,32 @@ import { resolve } from 'node:path';
 
 interface BlobEntry {
   url: string;
-  contentType: string;
   width: number | null;
   height: number | null;
 }
 
 const GENERATED_PATH = 'src/generated/blob-manifest.ts';
+
+function inferContentType(pathname: string): string {
+  const ext = pathname.split('.').pop()?.toLowerCase() ?? '';
+  switch (ext) {
+    case 'svg':
+      return 'image/svg+xml';
+    case 'jpg':
+    case 'jpeg':
+      return 'image/jpeg';
+    case 'png':
+      return 'image/png';
+    case 'webp':
+      return 'image/webp';
+    case 'avif':
+      return 'image/avif';
+    case 'gif':
+      return 'image/gif';
+    default:
+      return 'application/octet-stream';
+  }
+}
 
 async function buildManifest(): Promise<Record<string, BlobEntry>> {
   const token = process.env.BLOB_READ_WRITE_TOKEN;
@@ -160,10 +180,10 @@ async function buildManifest(): Promise<Record<string, BlobEntry>> {
   const manifest: Record<string, BlobEntry> = {};
 
   for (const blob of blobs) {
-    const dims = await probeDims(blob.url, blob.pathname, blob.contentType);
+    const contentType = inferContentType(blob.pathname);
+    const dims = await probeDims(blob.url, blob.pathname, contentType);
     manifest[blob.pathname] = {
       url: blob.url,
-      contentType: blob.contentType,
       width: dims?.width ?? null,
       height: dims?.height ?? null,
     };
@@ -233,6 +253,7 @@ Notes baked into this file:
 - Keys are sorted before write — deterministic output.
 - Empty blob store writes `{}` — succeeds, doesn't throw.
 - SVG probe failure → warning + null dimensions. Raster probe failure → loud throw.
+- `contentType` is inferred locally from the pathname extension (`@vercel/blob` v2's `list()` doesn't return contentType). It's only used inside `probeDims` for the SVG-fallback branch — never stored in the manifest.
 
 - [ ] **Step 3: Seed the initial empty stub at `src/generated/blob-manifest.ts`**
 
@@ -397,28 +418,34 @@ export const blobImageSchema = z
     key: z
       .string({ message: 'Image `key` is required.' })
       .min(1, { message: 'Image `key` must not be empty.' })
-      .refine(
-        (k) => k in BLOB_MANIFEST,
-        (k) => ({
-          message:
-            `Image \`key\` "${k}" was not found in Vercel Blob. ` +
-            `Upload it via the Vercel dashboard, then restart dev / rebuild. ` +
-            `Known keys starting similarly: ${suggestNearby(k)}.`,
-        }),
-      ),
+      .superRefine((k, ctx) => {
+        if (!(k in BLOB_MANIFEST)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message:
+              `Image \`key\` "${k}" was not found in Vercel Blob. ` +
+              `Upload it via the Vercel dashboard, then restart dev / rebuild. ` +
+              `Known keys starting similarly: ${suggestNearby(k)}.`,
+          });
+        }
+      }),
     alt: z
       .string({ message: 'Image `alt` is required.' })
       .min(1, { message: 'Image `alt` must not be empty.' }),
   })
   .strict();
 
-export type BlobImage = z.infer<typeof blobImageSchema>;
+export type BlobImage = {
+  key: string;
+  alt: string;
+};
 ```
 
 Notes:
 - Imports `BLOB_MANIFEST` from the generated file. The generated file always exists (Task 2 seeded the stub; Astro keeps it fresh).
 - `suggestNearby` is a prefix-match — not a fuzzy search. Goal is "did you typo within the same folder?"
-- The `.refine` message is a function so it can reference `k` (the bad input).
+- Astro 6 ships Zod 4: `.refine(predicate, fnReturningParams)` is Zod-3 syntax and doesn't compile here. `.superRefine` is the Zod-4-compatible way to reference the bad input value inside the error message.
+- Astro's `z` from `astro:content` is exported as a value, not a namespace, so `z.infer<typeof X>` doesn't resolve at type-check time. Hand-writing the `BlobImage` type is the established workaround for this codebase.
 
 - [ ] **Step 2: Verify it type-checks**
 

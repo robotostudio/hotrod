@@ -32,6 +32,8 @@ astro.config.mjs                          — +integration, +image.remotePattern
    - For each, `probe-image-size` runs an HTTP range request and reads `{ width, height }`. SVG without intrinsic dims → warning, dimensions recorded as `null`.
    - Writes typed `src/generated/blob-manifest.ts` exporting `BLOB_MANIFEST: Record<string, BlobEntry>` keyed by blob `pathname`.
 2. **Content load** — Zod's `blobImageSchema` validates `key` exists in the manifest at refinement time. Missing key → loud failure naming the offending file, the bad key, and up to three near-matches.
+
+   Note: `@vercel/blob` v2's `list()` API doesn't return per-blob `contentType`. The integration infers contentType locally from the pathname extension and uses it only for the SVG-fallback branch in `probeDims`. `contentType` is **not** stored in the manifest — nothing downstream reads it.
 3. **Render** — `<BlobImage key={...} alt={...} />` reads the manifest entry, passes `url` / `width` / `height` to Astro's `<Image>`, which produces optimized output through Vercel's image service in production and Astro's Sharp pipeline in dev.
 
 ## 4. Shared blob-image schema
@@ -55,25 +57,34 @@ export const blobImageSchema = z
     key: z
       .string({ message: 'Image `key` is required.' })
       .min(1, { message: 'Image `key` must not be empty.' })
-      .refine(
-        (k) => k in BLOB_MANIFEST,
-        (k) => ({
-          message:
-            `Image \`key\` "${k}" was not found in Vercel Blob. ` +
-            `Upload it via the Vercel dashboard, then restart dev / rebuild. ` +
-            `Known keys starting similarly: ${suggestNearby(k)}.`,
-        }),
-      ),
+      .superRefine((k, ctx) => {
+        if (!(k in BLOB_MANIFEST)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message:
+              `Image \`key\` "${k}" was not found in Vercel Blob. ` +
+              `Upload it via the Vercel dashboard, then restart dev / rebuild. ` +
+              `Known keys starting similarly: ${suggestNearby(k)}.`,
+          });
+        }
+      }),
     alt: z
       .string({ message: 'Image `alt` is required.' })
       .min(1, { message: 'Image `alt` must not be empty.' }),
   })
   .strict();
 
-export type BlobImage = z.infer<typeof blobImageSchema>;
+export type BlobImage = {
+  key: string;
+  alt: string;
+};
 ```
 
 The `suggestNearby` helper is a tiny prefix-match. It's a hint, not a fuzzy search; the goal is "did you typo `pages/index/legacy.jpg` vs `pages/index/legacy-driver.jpg`."
+
+**Zod-4 syntax notes** (Astro 6 ships Zod 4, not 3):
+- `.refine(predicate, fnReturningParams)` is Zod 3 — doesn't compile here. Use `.superRefine((value, ctx) => ctx.addIssue({...}))` when the error message needs to reference the bad input.
+- `z` from `astro:content` is exported as a value, not a namespace, so `z.infer<typeof X>` doesn't resolve at type-check time. Hand-write the type alongside the schema.
 
 ## 5. `<BlobImage>` component
 
@@ -144,12 +155,25 @@ import { resolve } from 'node:path';
 
 interface BlobEntry {
   url: string;
-  contentType: string;
   width: number | null;
   height: number | null;
 }
 
 const GENERATED_PATH = 'src/generated/blob-manifest.ts';
+
+function inferContentType(pathname: string): string {
+  const ext = pathname.split('.').pop()?.toLowerCase() ?? '';
+  switch (ext) {
+    case 'svg': return 'image/svg+xml';
+    case 'jpg':
+    case 'jpeg': return 'image/jpeg';
+    case 'png': return 'image/png';
+    case 'webp': return 'image/webp';
+    case 'avif': return 'image/avif';
+    case 'gif': return 'image/gif';
+    default: return 'application/octet-stream';
+  }
+}
 
 async function buildManifest(): Promise<Record<string, BlobEntry>> {
   const token = process.env.BLOB_READ_WRITE_TOKEN;
@@ -163,10 +187,10 @@ async function buildManifest(): Promise<Record<string, BlobEntry>> {
   const { blobs } = await list({ token });
   const manifest: Record<string, BlobEntry> = {};
   for (const blob of blobs) {
-    const dims = await probeDims(blob.url, blob.pathname, blob.contentType);
+    const contentType = inferContentType(blob.pathname);
+    const dims = await probeDims(blob.url, blob.pathname, contentType);
     manifest[blob.pathname] = {
       url: blob.url,
-      contentType: blob.contentType,
       width: dims?.width ?? null,
       height: dims?.height ?? null,
     };
