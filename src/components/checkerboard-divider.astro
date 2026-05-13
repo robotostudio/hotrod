@@ -1,0 +1,28 @@
+---
+interface Props {
+  rows?: number;
+  squareSize?: number;
+  class?: string;
+}
+
+const { rows = 2, squareSize = 28, class: className = '' } = Astro.props;
+
+const height = rows * squareSize;
+const tileSize = squareSize * 2;
+const halfSize = squareSize;
+---
+
+<div
+  class:list={['w-full', className]}
+  style={`
+    height: ${height}px;
+    background-color: var(--background);
+    background-image:
+      linear-gradient(45deg, var(--foreground) 25%, transparent 25%),
+      linear-gradient(-45deg, var(--foreground) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, var(--foreground) 75%),
+      linear-gradient(-45deg, transparent 75%, var(--foreground) 75%);
+    background-size: ${tileSize}px ${tileSize}px;
+    background-position: 0 0, 0 ${halfSize}px, ${halfSize}px -${halfSize}px, -${halfSize}px 0px;
+  `}
+/>
