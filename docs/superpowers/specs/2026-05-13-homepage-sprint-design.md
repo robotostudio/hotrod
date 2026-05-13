@@ -222,11 +222,13 @@ src/blocks/card-grid/{schema.ts, index.astro}    # REWRITE stubs
 src/blocks/feature-strip/{schema.ts, index.astro}# REWRITE stubs
 src/blocks/pricing/{schema.ts, index.astro}      # REWRITE stubs
 src/blocks/cta-banner/{schema.ts, index.astro}   # REWRITE stubs
+src/components/page-sections.astro               # DELETE — no longer needed
 src/components/site-nav.astro                    # NEW — nav links + Book Now button
 src/components/site-footer.astro                 # NEW — replaces inline footer
 src/components/highlight-title.astro             # NEW — title highlight parser used by hero (+ future blocks)
-src/components/lucide.astro                      # NEW — thin wrapper around astro-icon with name validation
-src/layouts/base-layout.astro                    # MODIFY — wire site-nav + site-footer
+src/components/lucide.astro                      # NEW — thin wrapper around astro-icon
+src/layouts/base-layout.astro                    # MODIFY — wire site-nav + site-footer, add footer-bottom divider
+src/pages/[...slug].astro                        # MODIFY — drop PageSections wrapper; render blocks directly
 src/content/pages/index.mdx                      # REWRITE — block-composed homepage
 src/content/pages/services.mdx                   # NEW — stub
 src/content/pages/pricing.mdx                    # NEW — stub
@@ -235,12 +237,12 @@ src/content/pages/contact.mdx                    # NEW — stub
 
 ### Divider responsibility (the precise layout contract)
 
-Dividers belong to **the block** when the block has a black background, not to `<PageSections>`. The rule:
+Dividers belong to **the block** when the block has a black background. The rule:
 
 - **Black-bg blocks emit `<CheckerboardDivider />` at both the top and bottom of their own markup.** The divider is part of the block's own visual contract.
 - **Yellow-bg blocks emit no dividers.** The visual transition is supplied entirely by the neighbouring black-bg block's divider.
 - **Chrome dividers stay in `base-layout.astro`:** the existing `<CheckerboardDivider />` between header strip and `<slot />` is unchanged; one new `<CheckerboardDivider />` lands below the footer, matching v0.
-- **`<PageSections>` reverts to a thin vertical-rhythm wrapper** (the original ROB-1993 framing). It injects nothing.
+- **`<PageSections>` is removed.** Now that dividers live inside blocks and each block is a full-bleed `<section>`, there is no inter-block layout left to own. `[...slug].astro` renders blocks directly inside `<BaseLayout>`; the file `src/components/page-sections.astro` and the import in `[...slug].astro` are deleted. This is a deliberate walk-back of the ROB-1993 framing — that ticket reserved `<PageSections>` for future inter-block layout concerns; this sprint is confirming none of those concerns landed, so the wrapper has earned its way out.
 
 On the homepage (alternating yellow / black / yellow / black / yellow / black / yellow):
 
