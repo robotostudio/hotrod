@@ -1,6 +1,25 @@
 ---
-type Props = { type: 'card-grid' };
+import Lucide from '../../components/lucide.astro';
+
+type Props = {
+  type: 'card-grid';
+  title: string;
+  items: { icon: string; title: string; description: string }[];
+};
+
+const { title, items } = Astro.props;
 ---
-<section data-block-stub="card-grid" class="border border-dashed border-foreground/30 px-6 py-8 text-sm">
-  card-grid (placeholder)
+<section class="bg-background text-foreground py-20 px-6">
+  <div class="mx-auto max-w-7xl">
+    <h2 class="text-5xl md:text-6xl font-black text-center mb-16">{title}</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      {items.map((item) => (
+        <article class="bg-foreground text-background p-8 border-4 border-foreground hover:border-background transition-colors">
+          <Lucide name={item.icon} class="w-16 h-16 mb-6" />
+          <h3 class="text-2xl font-black mb-4">{item.title}</h3>
+          <p class="text-lg font-medium opacity-90">{item.description}</p>
+        </article>
+      ))}
+    </div>
+  </div>
 </section>
