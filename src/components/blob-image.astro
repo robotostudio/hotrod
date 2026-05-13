@@ -1,0 +1,47 @@
+---
+import { Image } from 'astro:assets';
+import { BLOB_MANIFEST } from '../generated/blob-manifest';
+
+interface Props {
+  image: { key: string; alt: string };
+  class?: string;
+  priority?: boolean;
+  sizes?: string;
+}
+
+const {
+  image,
+  class: className,
+  priority = false,
+  sizes = '(min-width: 768px) 50vw, 100vw',
+} = Astro.props;
+
+const entry = BLOB_MANIFEST[image.key as keyof typeof BLOB_MANIFEST] as { url: string; width: number | null; height: number | null } | undefined;
+if (!entry) {
+  throw new Error(
+    `<BlobImage> called with unknown blob key "${image.key}". ` +
+      `This is a bug — the Zod schema should have caught this before render.`,
+  );
+}
+---
+{entry.width && entry.height ? (
+  <Image
+    src={entry.url}
+    alt={image.alt}
+    width={entry.width}
+    height={entry.height}
+    sizes={sizes}
+    loading={priority ? 'eager' : 'lazy'}
+    decoding="async"
+    fetchpriority={priority ? 'high' : undefined}
+    class={className}
+  />
+) : (
+  <img
+    src={entry.url}
+    alt={image.alt}
+    loading={priority ? 'eager' : 'lazy'}
+    decoding="async"
+    class={className}
+  />
+)}
