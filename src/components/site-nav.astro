@@ -1,0 +1,26 @@
+---
+const links = [
+  { label: 'Services', href: '/services' },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
+];
+---
+<header class="bg-primary text-primary-foreground">
+  <nav class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+    <a href="/" class="text-2xl font-black tracking-tight">HOTROD</a>
+    <ul class="hidden md:flex items-center gap-8 font-bold">
+      {links.map((link) => (
+        <li>
+          <a href={link.href} class="hover:underline underline-offset-4">{link.label}</a>
+        </li>
+      ))}
+    </ul>
+    <a
+      href="/contact"
+      class="inline-flex items-center justify-center bg-primary-foreground text-primary font-bold px-4 py-2 hover:bg-primary-foreground/90 transition-colors"
+    >
+      Book Now
+    </a>
+  </nav>
+</header>
