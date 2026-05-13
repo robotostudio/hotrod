@@ -12,33 +12,35 @@ const { name, role, shortBio, social } = author.data;
 ---
 
 <BaseLayout title={name} description={shortBio}>
-  <article class="prose prose-slate">
-    <h1>{name}</h1>
-    {role && <p class="text-sm uppercase tracking-wide text-slate-500">{role}</p>}
-    <p class="lead">{shortBio}</p>
-    <slot />
-    {Object.keys(social).length > 0 && (
-      <ul>
-        {social.twitter && <li><a href={`https://twitter.com/${social.twitter}`}>Twitter</a></li>}
-        {social.github && <li><a href={`https://github.com/${social.github}`}>GitHub</a></li>}
-        {social.linkedin && <li><a href={`https://linkedin.com/in/${social.linkedin}`}>LinkedIn</a></li>}
-        {social.website && <li><a href={social.website}>Website</a></li>}
-      </ul>
+  <div class="mx-auto max-w-3xl px-6 py-12">
+    <article class="prose">
+      <h1>{name}</h1>
+      {role && <p class="text-sm font-bold uppercase tracking-wide">{role}</p>}
+      <p class="lead">{shortBio}</p>
+      <slot />
+      {Object.keys(social).length > 0 && (
+        <ul>
+          {social.twitter && <li><a href={`https://twitter.com/${social.twitter}`}>Twitter</a></li>}
+          {social.github && <li><a href={`https://github.com/${social.github}`}>GitHub</a></li>}
+          {social.linkedin && <li><a href={`https://linkedin.com/in/${social.linkedin}`}>LinkedIn</a></li>}
+          {social.website && <li><a href={social.website}>Website</a></li>}
+        </ul>
+      )}
+    </article>
+    {posts.length > 0 && (
+      <section class="mt-12">
+        <h2 class="text-2xl font-black tracking-tight">Posts by {name}</h2>
+        <ul class="mt-4 space-y-3">
+          {posts.map((post) => (
+            <li>
+              <a href={`/blog/${post.id}`} class="font-bold hover:underline underline-offset-4">
+                {post.data.title}
+              </a>
+              <p class="text-sm font-medium">{post.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
     )}
-  </article>
-  {posts.length > 0 && (
-    <section class="mt-12">
-      <h2 class="text-2xl font-semibold">Posts by {name}</h2>
-      <ul class="mt-4 space-y-3">
-        {posts.map((post) => (
-          <li>
-            <a href={`/blog/${post.id}`} class="font-medium hover:underline">
-              {post.data.title}
-            </a>
-            <p class="text-sm text-slate-500">{post.data.description}</p>
-          </li>
-        ))}
-      </ul>
-    </section>
-  )}
+  </div>
 </BaseLayout>
