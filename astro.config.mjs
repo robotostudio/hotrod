@@ -4,6 +4,7 @@ import mdx from '@astrojs/mdx';
 import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import icon from 'astro-icon';
+import { blobManifest } from './src/integrations/blob-manifest.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,7 +12,12 @@ export default defineConfig({
   adapter: vercel({
     imageService: true,
   }),
-  integrations: [mdx(), icon()],
+  image: {
+    remotePatterns: [
+      { protocol: 'https', hostname: '*.public.blob.vercel-storage.com' },
+    ],
+  },
+  integrations: [mdx(), icon(), blobManifest()],
   vite: {
     plugins: [tailwindcss()],
   },
