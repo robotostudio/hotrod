@@ -9,7 +9,7 @@ type Props = {
 const { publishedAt, updatedAt } = Astro.props;
 ---
 
-<p class="text-sm text-slate-500">
+<p class="text-sm font-semibold">
   <span>Published {formatDate(publishedAt)}</span>
   {updatedAt && (
     <>
