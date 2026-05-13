@@ -56,25 +56,35 @@ Plan: `docs/superpowers/plans/2026-05-12-visual-identity.md`
 
 **Why next:** the design system is live, so block components can be designed against real visual context rather than imagined.
 
-**Scope (text-only spec, agree before implementing):**
-- Convert the `pages` content collection to a block-composed model: frontmatter carries a strict-Zod-validated discriminated-union `blocks: [...]` array; the MDX body becomes optional or unused for pages.
-- Initial block set (informed by the source taxi-landing-page repo): hero, feature-grid, pricing-card, cta, checkerboard-divider (already exists as a chrome component — also exposed as a block), section-heading.
-- Renderer in `src/pages/[...slug].astro` walks the blocks array and dispatches each entry to the corresponding component.
-- Decide: icon strategy (lucide-astro vs raw SVG vs none) — driven by what blocks actually need.
-- Rewrite `src/content/pages/index.mdx`, `src/content/pages/about.mdx`, `src/content/pages/services/astro.mdx` to use blocks. Add a new `/contact` page.
+**Framework tickets (filed 2026-05-13, Hotrod project):**
+- ROB-1993 — Add pagebuilder framework (block-composed pages). Commits to **frontmatter blocks**, not JSX-in-body — chosen for strict Zod validation with custom error messages aimed at non-technical authors. Introduces `<PageSections>` wrapper as the single source of inter-block layout.
+- ROB-1994 — Pick icon strategy and define named icon set.
+- ROB-1995 — Migrate existing pages to block-composed model and add /contact.
 
-**Out of scope:** any change to `blog` or `authors` schemas; image blocks (those wait for Phase 4 media support); CMS integration; admin UI.
+**Block tickets (filed 2026-05-13, Hotrod project):**
+- ROB-1982 — navigation-bar
+- ROB-1983 — hero
+- ROB-1984 — figures
+- ROB-1985 — card-grid (Our Services)
+- ROB-1986 — feature-strip (Why Choose Us)
+- ROB-1987 — pricing
+- ROB-1988 — cta-banner
+- ROB-1989 — footer
+
+Each block ticket has its v0 source screenshot inline and the `jonoroboto/v0-taxi-landing-page` repo attached. Universal prop nomenclature (`title`, `text`, `buttons`) and inline `==highlight==` syntax established in the hero ticket apply to every block.
+
+**Dependency graph:** ROB-1993 blocks the 8 block tickets (each needs the renderer for its smoke check). ROB-1994 blocks ROB-1983 / ROB-1985 / ROB-1986 (icon-using blocks). ROB-1995 is blocked by all of the above.
+
+**Out of scope:** any change to `blog` or `authors` schemas; image blocks (those wait for the media work below); CMS integration; admin UI.
 
 ## Phase 4 — Media support
 
 **Why fourth:** the storage convention is set and the schemas are the contract — image/video is the next major capability, and once Phase 3's pagebuilder exists, image-bearing blocks (e.g. hero with background image) become possible.
 
-**Scope (text-only spec, agree before implementing):**
-- Add optional `heroImage` (blob key) to `blog`, `avatar` (blob key) to `authors`, and a generic `image` reference type for inline MDX/block use.
-- Create a small `<BlobImage>` component that resolves a blob key → public URL via `@vercel/blob`'s URL helpers, with width/aspect props.
-- Create a `<MuxVideo>` component wrapping `@mux/mux-player` with playback ID + lazy-load defaults.
-- Decide: do we want a manifest of approved blob keys (so an agent can't reference a nonexistent blob) or trust the build to 404 at runtime? Lean toward a manifest for the Hotrod audience.
-- Update the README's Media section to show usage examples.
+**Linear tickets (filed 2026-05-13, Hotrod project):**
+- ROB-1990 — Add Vercel Blob image support (`heroImage`, `avatar`, inline `image` ref, `<BlobImage>` component)
+- ROB-1991 — Add Mux video support (`<MuxVideo>` component wrapping `@mux/mux-player`, inline `video` ref)
+- ROB-1992 — Validate blob keys against a build-time manifest (blocked by ROB-1990)
 
 **Out of scope:** image transformation pipeline, CDN config, video transcoding controls. Treat Mux + Blob as black boxes.
 
@@ -88,11 +98,19 @@ Plan: `docs/superpowers/plans/2026-05-12-visual-identity.md`
 
 **Out of scope:** generic Astro docs (link to Astro instead). This is a Hotrod-specific orientation.
 
+**Linear ticket:** ROB-1996 — Add agent-facing CLAUDE.md at repo root. Blocked by ROB-1993 (framework), ROB-1995 (page migration), ROB-1990 (Blob image), ROB-1991 (Mux video).
+
 ## Optional / nice-to-have (not on the path)
 
-- **Typography backtick fix.** `@tailwindcss/typography` adds literal `` ` `` around inline `<code>` via `::before/::after`. Trivial CSS override in `global.css` if you want it gone.
-- **Tailwind theme.** You said it's intentionally held back; slot it in via Tailwind v4's `@theme` block in `global.css` whenever ready — no component changes needed.
-- **RSS feed, sitemap, tag pages, pagination, search.** All deferred per the spec's non-goals. The data is already in the schemas for whenever they're useful.
+- **Typography backtick fix** — ROB-1997. `@tailwindcss/typography` adds literal `` ` `` around inline `<code>` via `::before/::after`. CSS override in `global.css`.
+- **Tailwind theme** — ROB-1998. Slot in via Tailwind v4's `@theme` block in `global.css`; no component changes.
+- **RSS feed, sitemap, tag pages, pagination, search.** All deferred per the spec's non-goals. The data is already in the schemas for whenever they're useful. Not yet ticketed.
+
+## Tooling notes (for fresh sessions)
+
+- **Linear MCP** is available; check `list_teams`/`save_issue` for any new tickets.
+- **`writing-linear-tickets` skill** — house ticket convention. Drafted at `~/dev/skills/skills/writing-linear-tickets/` and PR'd at https://github.com/robotostudio/skills/pull/1.
+- **`~/.local/bin/linear-upload.py`** — uploads a local image as an inline screenshot at the top of a Linear ticket's description. Usage: `python3 ~/.local/bin/linear-upload.py <path-to-png> <ROB-XXXX> "<alt text>"`. Reads `~/.linear-api-key` (already populated; rotate it if it's been compromised).
 
 ---
 
@@ -100,6 +118,8 @@ Plan: `docs/superpowers/plans/2026-05-12-visual-identity.md`
 
 Paste this at the start of a fresh session in `/Users/jono/dev/hotrod`:
 
-> I'm continuing work on Hotrod (`/Users/jono/dev/hotrod`), Roboto Studio's agent-first Astro starter. The first content pass is shipped on `main` (Astro 6, MDX, Tailwind v4, three strict Zod content collections with routes). The next-up plan is in `docs/next-up.md`. Conventions live in memory and in `README.md`: kebab-case filenames everywhere, strict Zod schemas with human-readable error messages, `public/` is chrome only (content media goes to Vercel Blob / Mux).
+> I'm continuing work on Hotrod (`/Users/jono/dev/hotrod`), Roboto Studio's agent-first Astro starter. Phases 1 (Vercel deploy) and 2 (visual identity) are shipped on `main`. Tickets are filed in the Hotrod Linear project for Phase 3 (pagebuilder framework + blocks, ROB-1982 – ROB-1989, ROB-1993 – ROB-1995), Phase 4 (media, ROB-1990 – ROB-1992), Phase 5 (CLAUDE.md, ROB-1996), and the optional items (ROB-1997, ROB-1998). The full state — including the dependency graph — is in `docs/next-up.md`. Read it first.
 >
-> I want to start **Phase 1: Deploy to Vercel**. Walk me through the brainstorming questions before doing anything — I haven't decided on production domain, custom build settings, or env-var strategy yet. Once we've agreed on the approach, write a short spec, then a plan, then implement.
+> Conventions to respect: kebab-case filenames everywhere, strict Zod schemas with human-readable error messages, `public/` is chrome only (content media goes to Vercel Blob / Mux). Pages use the frontmatter-driven `blocks: [...]` model (committed to in ROB-1993). For any new tickets, follow the `writing-linear-tickets` skill at `~/dev/skills/skills/writing-linear-tickets/SKILL.md`.
+>
+> The right starting point is ROB-1993 (pagebuilder framework) — it unblocks every block ticket. Walk me through the brainstorming questions before touching code; once we've agreed, write a short spec under `docs/superpowers/specs/`, then a plan under `docs/superpowers/plans/`, then implement.
