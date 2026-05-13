@@ -60,6 +60,22 @@ Content media (post hero images, author avatars, embedded video) is **not** stor
 
 Media support isn't wired up yet — the first content pass is text-only.
 
+## Design
+
+Hotrod's visual identity is a yellow-cab-themed brand: bold typography, a black-and-yellow palette, and a checkerboard divider as recurring chrome.
+
+### Palette and tokens
+
+All design tokens live in `src/styles/global.css`. The structure mirrors shadcn/ui's CSS-custom-property pattern but trimmed to what Hotrod actually uses — no dark mode, no chart or sidebar tokens. To change the palette, edit the `:root` block; the `@theme inline` block re-exposes those values to Tailwind so utilities like `bg-background` and `text-foreground` stay in sync.
+
+### Fonts
+
+Geist and Geist Mono are loaded via Astro 6's [fonts API](https://docs.astro.build/en/guides/fonts/) with the `fontsource` provider, configured in `astro.config.mjs`. The base layout includes `<Font cssVariable="--font-sans" preload />` so the sans font preloads on every page.
+
+### Brand chrome
+
+The black header strip with `HOTROD` wordmark, the `<CheckerboardDivider />` underneath, and the black footer all live in `src/layouts/base-layout.astro`. Inner content max-widths live in the per-route layouts (`page-layout.astro`, `post-layout.astro`, `author-layout.astro`).
+
 ## Commands
 
 All commands run from the project root.
