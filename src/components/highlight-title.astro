@@ -1,0 +1,22 @@
+---
+type Props = {
+  text: string;
+};
+
+const { text } = Astro.props;
+
+const segments = text.split('==');
+// even-index segments are plain text; odd-index segments are highlights.
+---
+{segments.map((segment, i) =>
+  i % 2 === 0
+    ? <Fragment set:text={segment} />
+    : (
+      <>
+        <br />
+        <mark class="inline-block bg-foreground text-background px-4 py-2 mt-2">
+          {segment}
+        </mark>
+      </>
+    )
+)}
