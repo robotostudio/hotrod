@@ -4,7 +4,7 @@ A short, ordered game plan for the next few sessions, plus a ready-to-paste prom
 
 ## Where we are
 
-The first content pass and Phase 1 (Vercel deploy) are shipped on `main`. Production: https://hotrod.robotostudio.com.
+Phases 1 (Vercel deploy) and 2 (visual identity) are shipped on `main`. Production: https://hotrod.robotostudio.com.
 
 - Astro 6 + MDX + Tailwind v4 + `@tailwindcss/typography`.
 - Three strict Zod content collections: `pages`, `blog`, `authors`. Defined in `src/content.config.ts`.
@@ -38,12 +38,39 @@ What landed:
 Spec: `docs/superpowers/specs/2026-05-12-vercel-deploy-design.md`
 Plan: `docs/superpowers/plans/2026-05-12-vercel-deploy.md`
 
-## Phase 2 — Media support
+## Phase 2 — Visual identity + chrome ✅
 
-**Why second:** the storage convention is set and the schemas are the contract — image/video is the next major capability.
+Shipped 2026-05-13. Hotrod's brand is now live: yellow + black palette, Geist via Astro's fonts API, checkerboard divider, black header strip with HOTROD wordmark, black footer.
+
+What landed:
+- `src/styles/global.css` holds the trimmed shadcn-style token system (no dark mode, no chart/sidebar tokens) and `@tailwindcss/typography` prose overrides for yellow.
+- `astro.config.mjs` wires the Astro 6 fonts API with `fontProviders.fontsource()` for Geist + Geist Mono.
+- `src/layouts/base-layout.astro` provides the new chrome; per-route layouts (page/post/author) carry the inner `max-w-3xl` container.
+- `src/components/checkerboard-divider.astro` ports the taxi repo's `checkerboard-divider.tsx` directly.
+- README has a new "Design" section documenting the token system, fonts, and chrome.
+
+Spec: `docs/superpowers/specs/2026-05-12-visual-identity-design.md`
+Plan: `docs/superpowers/plans/2026-05-12-visual-identity.md`
+
+## Phase 3 — Pagebuilder blocks for `pages` collection
+
+**Why next:** the design system is live, so block components can be designed against real visual context rather than imagined.
 
 **Scope (text-only spec, agree before implementing):**
-- Add optional `heroImage` (blob key) to `blog`, `avatar` (blob key) to `authors`, and a generic `image` reference type for inline MDX use.
+- Convert the `pages` content collection to a block-composed model: frontmatter carries a strict-Zod-validated discriminated-union `blocks: [...]` array; the MDX body becomes optional or unused for pages.
+- Initial block set (informed by the source taxi-landing-page repo): hero, feature-grid, pricing-card, cta, checkerboard-divider (already exists as a chrome component — also exposed as a block), section-heading.
+- Renderer in `src/pages/[...slug].astro` walks the blocks array and dispatches each entry to the corresponding component.
+- Decide: icon strategy (lucide-astro vs raw SVG vs none) — driven by what blocks actually need.
+- Rewrite `src/content/pages/index.mdx`, `src/content/pages/about.mdx`, `src/content/pages/services/astro.mdx` to use blocks. Add a new `/contact` page.
+
+**Out of scope:** any change to `blog` or `authors` schemas; image blocks (those wait for Phase 4 media support); CMS integration; admin UI.
+
+## Phase 4 — Media support
+
+**Why fourth:** the storage convention is set and the schemas are the contract — image/video is the next major capability, and once Phase 3's pagebuilder exists, image-bearing blocks (e.g. hero with background image) become possible.
+
+**Scope (text-only spec, agree before implementing):**
+- Add optional `heroImage` (blob key) to `blog`, `avatar` (blob key) to `authors`, and a generic `image` reference type for inline MDX/block use.
 - Create a small `<BlobImage>` component that resolves a blob key → public URL via `@vercel/blob`'s URL helpers, with width/aspect props.
 - Create a `<MuxVideo>` component wrapping `@mux/mux-player` with playback ID + lazy-load defaults.
 - Decide: do we want a manifest of approved blob keys (so an agent can't reference a nonexistent blob) or trust the build to 404 at runtime? Lean toward a manifest for the Hotrod audience.
@@ -51,12 +78,12 @@ Plan: `docs/superpowers/plans/2026-05-12-vercel-deploy.md`
 
 **Out of scope:** image transformation pipeline, CDN config, video transcoding controls. Treat Mux + Blob as black boxes.
 
-## Phase 3 — Agent-facing docs (`CLAUDE.md`)
+## Phase 5 — Agent-facing docs (`CLAUDE.md`)
 
-**Why third:** ergonomics multiplier for everyone using the starter via an agent, and only meaningful once Phase 1 and 2 are real.
+**Why fifth:** ergonomics multiplier for everyone using the starter via an agent, and only meaningful once Phases 2–4 are real.
 
 **Scope:**
-- Root-level `CLAUDE.md` covering: how content is structured, frontmatter schemas, where to put new posts/authors/pages, the kebab-case + strict-Zod rules, how to add media after Phase 2, and what *not* to do (don't drop binaries in `/public`, don't add fields without updating the schema).
+- Root-level `CLAUDE.md` covering: how content is structured, frontmatter schemas, where to put new posts/authors/pages, the kebab-case + strict-Zod rules, how to use design tokens and blocks (Phase 2–3), how to add media (Phase 4), and what *not* to do (don't drop binaries in `/public`, don't add fields without updating the schema).
 - A short "When the build fails, here's how to read the error" section pointing at the custom Zod messages.
 
 **Out of scope:** generic Astro docs (link to Astro instead). This is a Hotrod-specific orientation.
