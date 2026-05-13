@@ -1,6 +1,28 @@
 ---
-type Props = { type: 'feature-strip' };
+import CheckerboardDivider from '../../components/checkerboard-divider.astro';
+import Lucide from '../../components/lucide.astro';
+
+type Props = {
+  type: 'feature-strip';
+  title: string;
+  items: { icon: string; title: string; description: string }[];
+};
+
+const { title, items } = Astro.props;
 ---
-<section data-block-stub="feature-strip" class="border border-dashed border-foreground/30 px-6 py-8 text-sm">
-  feature-strip (placeholder)
+<CheckerboardDivider />
+<section class="bg-foreground text-background py-20 px-6">
+  <div class="mx-auto max-w-7xl">
+    <h2 class="text-5xl md:text-6xl font-black text-center mb-16">{title}</h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {items.map((item) => (
+        <div class="bg-background text-foreground p-6 text-center">
+          <Lucide name={item.icon} class="w-12 h-12 mx-auto mb-4" />
+          <h3 class="text-xl font-black mb-2">{item.title}</h3>
+          <p class="font-semibold">{item.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
 </section>
+<CheckerboardDivider />
