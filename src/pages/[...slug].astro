@@ -1,5 +1,8 @@
 ---
+import BaseLayout from '../layouts/base-layout.astro';
 import PageLayout from '../layouts/page-layout.astro';
+import PageSections from '../components/page-sections.astro';
+import { blockComponents } from '../blocks/registry';
 import { getPublishedPages } from '../lib/content';
 import { render } from 'astro:content';
 
@@ -12,15 +15,35 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
+const { title, description, publishedAt, updatedAt, blocks } = entry.data;
 const { Content } = await render(entry);
-const { title, description, publishedAt, updatedAt } = entry.data;
 ---
 
-<PageLayout
-  title={title}
-  description={description}
-  publishedAt={publishedAt}
-  updatedAt={updatedAt}
->
-  <Content />
-</PageLayout>
+{
+  blocks ? (
+    <BaseLayout
+      title={title}
+      description={description}
+      publishedAt={publishedAt}
+      updatedAt={updatedAt}
+    >
+      <PageSections>
+        {blocks.map((block) => {
+          // Astro can't narrow the spread across a generic component reference;
+          // the registry is a total lookup (enforced by Task 2's `satisfies`).
+          const Component = blockComponents[block.type] as (_props: typeof block) => unknown;
+          return <Component {...block} />;
+        })}
+      </PageSections>
+    </BaseLayout>
+  ) : (
+    <PageLayout
+      title={title}
+      description={description}
+      publishedAt={publishedAt}
+      updatedAt={updatedAt}
+    >
+      <Content />
+    </PageLayout>
+  )
+}
