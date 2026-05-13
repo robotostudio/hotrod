@@ -69,7 +69,8 @@ Icon names are bare lucide slugs (e.g. `'phone'`, `'map-pin'`, `'car'`); the com
 }
 ```
 
-- Renders as a black section with a responsive grid (2-col on mobile, 4-col on md+).
+- Renders as a **black** section with a responsive grid (2-col on mobile, 4-col on md+).
+- Emits `<CheckerboardDivider />` at both top and bottom of its own markup (black-bg block).
 - `value` is a free-form string so authors can write `"500K+"`, `"4.9★"`, `"24/7"` literally.
 - No section heading in v0; field omitted from schema. (Future: add optional `title` if ever wanted.)
 
@@ -104,7 +105,8 @@ Icon names are bare lucide slugs (e.g. `'phone'`, `'map-pin'`, `'car'`); the com
 }
 ```
 
-- Black section; 4-up grid on lg+ (2-up on md, 1-up on mobile). Smaller cards than card-grid; yellow tiles with black text.
+- **Black** section; 4-up grid on lg+ (2-up on md, 1-up on mobile). Smaller cards than card-grid; yellow tiles with black text.
+- Emits `<CheckerboardDivider />` at both top and bottom of its own markup (black-bg block).
 - Items are visually denser than card-grid items — same prop shape, different layout.
 
 ### pricing
@@ -139,7 +141,8 @@ Icon names are bare lucide slugs (e.g. `'phone'`, `'map-pin'`, `'car'`); the com
 }
 ```
 
-- Black section; large yellow heading; buttons same shape as hero.
+- **Black** section; large yellow heading; buttons same shape as hero.
+- Emits `<CheckerboardDivider />` at both top and bottom of its own markup (black-bg block).
 
 ## Chrome updates
 
@@ -161,17 +164,17 @@ Add:
 - Footer is yellow (matching v0).
 - HOTROD wordmark on left.
 - Right cluster: "Privacy", "Terms", "Support" links (hrefs: `/legal/privacy`, `/legal/terms`, `/support` — these can 404 for now; not in sprint scope to wire them up).
-- Below: copyright line "© <year> Roboto Studio. All rights reserved.", with `<year>` rendered at build time.
-- A checkerboard divider lands BELOW the footer too, matching v0.
+- Below: a tagline line reading: **Hotrod is built by [Roboto Studio](https://robotostudio.com).** The link uses the `external` target convention (`target="_blank" rel="noopener"`).
+- A checkerboard divider lands BELOW the footer too, matching v0. Owned by `base-layout.astro`.
 
 ## Icon strategy (closes ROB-1994)
 
 - Install `astro-icon` and `@iconify-json/lucide`.
 - Wire `astro-icon` in `astro.config.mjs` as an integration.
 - Components reference icons by short name (e.g. `'phone'`); the rendering component prefixes `lucide:` internally so authors never have to type prefixes.
-- Allowed icon names for this sprint (locked at schema level via `z.enum(...)` if practical, otherwise `z.string()` with build-time existence check is deferred):
-  - `phone`, `map-pin`, `car`, `clock`, `shield`, `star`, `users`, `zap`
-- Author error for unknown icon: caught at `astro-icon`'s build-time. We accept that error voice as "good enough"; if it's poor, file a follow-up to wrap the icon usage with a custom Zod check.
+- Schema field is `z.string()` — any of the ~1500 Lucide icons are allowed. Hotrod is a starter; locking to a small set is too restrictive for the businesses that adopt it.
+- Author error for unknown icon: caught at `astro-icon`'s build-time error. We accept that error voice as "good enough"; if it reads poorly in practice, file a follow-up to wrap the icon usage with a custom check.
+- A recommended starter set will be documented in the agent-facing `CLAUDE.md` (ROB-1996) when it lands, not enforced in the schema.
 
 ## Highlight syntax (formalises ROB-1983)
 
@@ -219,7 +222,6 @@ src/blocks/card-grid/{schema.ts, index.astro}    # REWRITE stubs
 src/blocks/feature-strip/{schema.ts, index.astro}# REWRITE stubs
 src/blocks/pricing/{schema.ts, index.astro}      # REWRITE stubs
 src/blocks/cta-banner/{schema.ts, index.astro}   # REWRITE stubs
-src/components/page-sections.astro               # MODIFY — emit dividers between blocks
 src/components/site-nav.astro                    # NEW — nav links + Book Now button
 src/components/site-footer.astro                 # NEW — replaces inline footer
 src/components/highlight-title.astro             # NEW — title highlight parser used by hero (+ future blocks)
@@ -233,14 +235,29 @@ src/content/pages/contact.mdx                    # NEW — stub
 
 ### Divider responsibility (the precise layout contract)
 
-Counting dividers in the v0 reference: 8 total — one above the hero (after nav), one between every adjacent section (5), one above the footer, one below the footer. Hotrod splits responsibility:
+Dividers belong to **the block** when the block has a black background, not to `<PageSections>`. The rule:
 
-- **`base-layout.astro`** emits dividers FLANKING the `<slot />` (above and below) and one final divider below the footer. So: `header → divider → <slot /> → divider → footer → divider`.
-- **`<PageSections>`** emits dividers BETWEEN adjacent block children only. It does NOT emit a top or bottom divider — those are BaseLayout's job and would double up.
-- For the homepage (6 blocks): 1 (header bottom, base) + 5 (between blocks, PageSections) + 1 (slot bottom, base) + 1 (footer bottom, base) = **8 dividers**, matching v0.
-- For body-only pages: 1 + 0 + 1 + 1 = 3 dividers (top, before footer, after footer). The same chrome rhythm.
+- **Black-bg blocks emit `<CheckerboardDivider />` at both the top and bottom of their own markup.** The divider is part of the block's own visual contract.
+- **Yellow-bg blocks emit no dividers.** The visual transition is supplied entirely by the neighbouring black-bg block's divider.
+- **Chrome dividers stay in `base-layout.astro`:** the existing `<CheckerboardDivider />` between header strip and `<slot />` is unchanged; one new `<CheckerboardDivider />` lands below the footer, matching v0.
+- **`<PageSections>` reverts to a thin vertical-rhythm wrapper** (the original ROB-1993 framing). It injects nothing.
 
-`<PageSections>` divider behavior is fixed (no schema flag). If a future block wants to suppress, we'll add a per-block boolean then. The departure from ROB-1993's "thin wrapper" framing is deliberate — pushing dividers into each block would duplicate the import 6× and breach the "PageSections owns inter-block layout" rule.
+On the homepage (alternating yellow / black / yellow / black / yellow / black / yellow):
+
+| Boundary | Divider source |
+| -------- | --------------- |
+| header(black) → hero(yellow) | base-layout (existing) |
+| hero(yellow) → figures(black) | figures block's TOP |
+| figures(black) → card-grid(yellow) | figures block's BOTTOM |
+| card-grid(yellow) → feature-strip(black) | feature-strip's TOP |
+| feature-strip(black) → pricing(yellow) | feature-strip's BOTTOM |
+| pricing(yellow) → cta-banner(black) | cta-banner's TOP |
+| cta-banner(black) → footer(yellow) | cta-banner's BOTTOM |
+| footer(yellow) → end of page | base-layout (new) |
+
+8 dividers total, matching v0.
+
+Caveat (acknowledged): two adjacent black-bg blocks would produce a doubled divider. The schema doesn't prevent this. Authors are expected to avoid it; if it shows up in practice we'll revisit with adjacency-aware logic. The same applies to the stub pages: hero(yellow) → cta-banner(black) → footer(yellow) means cta-banner's bottom divider plus base-layout's footer-bottom divider — exactly the boundaries we want.
 
 ## Verification
 
