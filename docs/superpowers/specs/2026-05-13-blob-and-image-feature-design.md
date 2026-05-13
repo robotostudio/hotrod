@@ -55,12 +55,15 @@ export const blobImageSchema = z
     key: z
       .string({ message: 'Image `key` is required.' })
       .min(1, { message: 'Image `key` must not be empty.' })
-      .refine((k) => k in BLOB_MANIFEST, {
-        message: (k) =>
-          `Image \`key\` "${k}" was not found in Vercel Blob. ` +
-          `Upload it via the Vercel dashboard, then restart dev / rebuild. ` +
-          `Known keys starting similarly: ${suggestNearby(k)}.`,
-      }),
+      .refine(
+        (k) => k in BLOB_MANIFEST,
+        (k) => ({
+          message:
+            `Image \`key\` "${k}" was not found in Vercel Blob. ` +
+            `Upload it via the Vercel dashboard, then restart dev / rebuild. ` +
+            `Known keys starting similarly: ${suggestNearby(k)}.`,
+        }),
+      ),
     alt: z
       .string({ message: 'Image `alt` is required.' })
       .min(1, { message: 'Image `alt` must not be empty.' }),
