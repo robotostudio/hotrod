@@ -21,10 +21,10 @@ const { title, description, publishedAt, updatedAt, author } = Astro.props;
   publishedAt={publishedAt}
   updatedAt={updatedAt}
 >
-  <article class="prose prose-slate">
+  <article class="prose mx-auto max-w-3xl px-6 py-12">
     <h1>{title}</h1>
     <PostMeta publishedAt={publishedAt} updatedAt={updatedAt} />
-    <p class="text-sm text-slate-500">
+    <p class="text-sm font-semibold">
       By <a href={`/authors/${author.id}`}>{author.data.name}</a>
     </p>
     <slot />
