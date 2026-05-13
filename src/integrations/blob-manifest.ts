@@ -10,7 +10,8 @@ interface BlobEntry {
   height: number | null;
 }
 
-const GENERATED_PATH = 'src/generated/blob-manifest.ts';
+const GENERATED_DIR = 'src/generated';
+const GENERATED_FILE = `${GENERATED_DIR}/blob-manifest.ts`;
 
 function inferContentType(pathname: string): string {
   const ext = pathname.split('.').pop()?.toLowerCase() ?? '';
@@ -33,7 +34,9 @@ function inferContentType(pathname: string): string {
   }
 }
 
-async function buildManifest(): Promise<Record<string, BlobEntry>> {
+async function buildManifest(
+  logger: { info: (msg: string) => void; warn: (msg: string) => void },
+): Promise<Record<string, BlobEntry>> {
   const token = process.env.BLOB_READ_WRITE_TOKEN;
   if (!token) {
     throw new Error(
@@ -43,19 +46,24 @@ async function buildManifest(): Promise<Record<string, BlobEntry>> {
     );
   }
 
-  const { blobs } = await list({ token });
-  const manifest: Record<string, BlobEntry> = {};
+  const allBlobs: Awaited<ReturnType<typeof list>>['blobs'] = [];
+  let cursor: string | undefined = undefined;
+  do {
+    const page: Awaited<ReturnType<typeof list>> = await list({ token, cursor });
+    allBlobs.push(...page.blobs);
+    cursor = page.hasMore ? page.cursor : undefined;
+  } while (cursor);
 
-  for (const blob of blobs) {
+  const manifest: Record<string, BlobEntry> = {};
+  for (const blob of allBlobs) {
     const contentType = inferContentType(blob.pathname);
-    const dims = await probeDims(blob.url, blob.pathname, contentType);
+    const dims = await probeDims(blob.url, blob.pathname, contentType, logger);
     manifest[blob.pathname] = {
       url: blob.url,
       width: dims?.width ?? null,
       height: dims?.height ?? null,
     };
   }
-
   return manifest;
 }
 
@@ -63,13 +71,14 @@ async function probeDims(
   url: string,
   key: string,
   contentType: string,
+  logger: { warn: (msg: string) => void },
 ): Promise<{ width: number; height: number } | null> {
   try {
     const result = await probe(url);
     return { width: result.width, height: result.height };
   } catch (err) {
     if (contentType === 'image/svg+xml') {
-      console.warn(
+      logger.warn(
         `[blob-manifest] SVG "${key}" has no intrinsic dimensions; ` +
           `it will render without width/height and rely on CSS sizing.`,
       );
@@ -95,8 +104,8 @@ export const BLOB_MANIFEST = ${JSON.stringify(sorted, null, 2)} as const;
 export type BlobManifestKey = keyof typeof BLOB_MANIFEST;
 `;
 
-  await mkdir('src/generated', { recursive: true });
-  await writeFile(resolve(GENERATED_PATH), body, 'utf8');
+  await mkdir(resolve(GENERATED_DIR), { recursive: true });
+  await writeFile(resolve(GENERATED_FILE), body, 'utf8');
 }
 
 export function blobManifest(): AstroIntegration {
@@ -105,11 +114,9 @@ export function blobManifest(): AstroIntegration {
     hooks: {
       'astro:config:setup': async ({ logger }) => {
         logger.info('Building Blob manifest...');
-        const manifest = await buildManifest();
+        const manifest = await buildManifest(logger);
         await writeManifest(manifest);
-        logger.info(
-          `Blob manifest written: ${Object.keys(manifest).length} entries.`,
-        );
+        logger.info(`Blob manifest written: ${Object.keys(manifest).length} entries.`);
       },
     },
   };
