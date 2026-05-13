@@ -4,7 +4,19 @@ import mdx from '@astrojs/mdx';
 import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import icon from 'astro-icon';
+import { loadEnv } from 'vite';
 import { blobManifest } from './src/integrations/blob-manifest.ts';
+
+// Load .env, .env.local, and mode-specific env files into process.env so that
+// integrations running at astro:config:setup (e.g. blobManifest) can read
+// secrets like BLOB_READ_WRITE_TOKEN. Astro's CLI does not do this automatically
+// for the config layer — Vite's loadEnv reads the same files Vite would.
+const env = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), '');
+for (const [key, value] of Object.entries(env)) {
+  if (process.env[key] === undefined) {
+    process.env[key] = value;
+  }
+}
 
 // https://astro.build/config
 export default defineConfig({
