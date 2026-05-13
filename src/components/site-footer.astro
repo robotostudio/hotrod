@@ -1,0 +1,31 @@
+---
+const links = [
+  { label: 'Privacy', href: '/legal/privacy' },
+  { label: 'Terms', href: '/legal/terms' },
+  { label: 'Support', href: '/support' },
+];
+---
+<footer class="bg-background text-foreground py-12 px-6">
+  <div class="mx-auto max-w-7xl">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <a href="/" class="text-2xl font-black tracking-tight">HOTROD</a>
+      <ul class="flex items-center gap-8 font-bold">
+        {links.map((link) => (
+          <li>
+            <a href={link.href} class="hover:underline underline-offset-4">{link.label}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <p class="mt-8 pt-8 border-t-4 border-foreground text-center font-semibold">
+      Hotrod is built by
+      {' '}
+      <a
+        href="https://robotostudio.com"
+        target="_blank"
+        rel="noopener"
+        class="underline underline-offset-4 hover:no-underline"
+      >Roboto Studio</a>.
+    </p>
+  </div>
+</footer>
