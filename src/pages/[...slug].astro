@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/base-layout.astro';
 import PageLayout from '../layouts/page-layout.astro';
-import PageSections from '../components/page-sections.astro';
 import { blockComponents } from '../blocks/registry';
 import { getPublishedPages } from '../lib/content';
 import { render } from 'astro:content';
@@ -27,14 +26,11 @@ const { Content } = await render(entry);
       publishedAt={publishedAt}
       updatedAt={updatedAt}
     >
-      <PageSections>
-        {blocks.map((block) => {
-          // Astro can't narrow the spread across a generic component reference;
-          // the registry is a total lookup (enforced by Task 2's `satisfies`).
-          const Component = blockComponents[block.type] as (_props: typeof block) => unknown;
-          return <Component {...block} />;
-        })}
-      </PageSections>
+      {blocks.map((block) => {
+        // see ROB-1993: registry lookup is total (satisfies clause).
+        const Component = blockComponents[block.type] as (_props: typeof block) => unknown;
+        return <Component {...block} />;
+      })}
     </BaseLayout>
   ) : (
     <PageLayout
