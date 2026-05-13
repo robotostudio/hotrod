@@ -1,6 +1,60 @@
 ---
-type Props = { type: 'pricing' };
+import Lucide from '../../components/lucide.astro';
+
+type Plan = {
+  name: string;
+  price: string;
+  unit: string;
+  features: string[];
+  featured: boolean;
+  cta: { label: string; href: string };
+};
+
+type Props = {
+  type: 'pricing';
+  title: string;
+  plans: Plan[];
+};
+
+const { title, plans } = Astro.props;
 ---
-<section data-block-stub="pricing" class="border border-dashed border-foreground/30 px-6 py-8 text-sm">
-  pricing (placeholder)
+<section class="bg-background text-foreground py-20 px-6">
+  <div class="mx-auto max-w-7xl">
+    <h2 class="text-5xl md:text-6xl font-black text-center mb-16">{title}</h2>
+    <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      {plans.map((plan) => (
+        <article
+          class:list={[
+            'p-8 text-center border-4 flex flex-col',
+            plan.featured
+              ? 'bg-foreground text-background border-background scale-105'
+              : 'bg-secondary text-foreground border-foreground',
+          ]}
+        >
+          <h3 class="text-2xl font-black mb-4">{plan.name}</h3>
+          <div class="text-5xl font-black mb-2">{plan.price}</div>
+          <div class="text-lg font-bold mb-6 opacity-80">{plan.unit}</div>
+          <ul class="space-y-3 mb-8 text-left">
+            {plan.features.map((feature) => (
+              <li class="flex items-center font-semibold">
+                <Lucide name="star" class="w-5 h-5 mr-2 flex-shrink-0" />
+                {feature}
+              </li>
+            ))}
+          </ul>
+          <a
+            href={plan.cta.href}
+            class:list={[
+              'mt-auto inline-flex items-center justify-center w-full font-bold text-lg py-6 transition-colors',
+              plan.featured
+                ? 'bg-background text-foreground hover:bg-background/90'
+                : 'bg-foreground text-background hover:bg-foreground/90',
+            ]}
+          >
+            {plan.cta.label}
+          </a>
+        </article>
+      ))}
+    </div>
+  </div>
 </section>
