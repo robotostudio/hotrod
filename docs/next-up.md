@@ -57,23 +57,23 @@ Plan: `docs/superpowers/plans/2026-05-12-visual-identity.md`
 **Why next:** the design system is live, so block components can be designed against real visual context rather than imagined.
 
 **Framework tickets (filed 2026-05-13, Hotrod project):**
-- ROB-1993 — Add pagebuilder framework (block-composed pages). Commits to **frontmatter blocks**, not JSX-in-body — chosen for strict Zod validation with custom error messages aimed at non-technical authors. Introduces `<PageSections>` wrapper as the single source of inter-block layout.
-- ROB-1994 — Pick icon strategy and define named icon set.
+- ROB-1993 — Add pagebuilder framework (block-composed pages). ✅ Shipped 2026-05-13. Frontmatter-driven `blocks: [...]` discriminated union; `src/blocks/<name>/` co-located schemas + components; single `registry.ts`; `buildBlocksField()` helper; `<PageSections>` thin vertical-rhythm wrapper; `[...slug].astro` branches on `blocks` presence. Six block stubs in place: hero, figures, card-grid, feature-strip, pricing, cta-banner. Nav and footer were re-scoped as **chrome** (not blocks) during design. Spec: `docs/superpowers/specs/2026-05-13-pagebuilder-framework-design.md`. Plan: `docs/superpowers/plans/2026-05-13-pagebuilder-framework.md`.
+- ROB-1994 — Pick icon strategy and define named icon set. Leaning `astro-icon` + Lucide (build-time inlined SVGs, no JS).
 - ROB-1995 — Migrate existing pages to block-composed model and add /contact.
 
 **Block tickets (filed 2026-05-13, Hotrod project):**
-- ROB-1982 — navigation-bar
+- ROB-1982 — navigation-bar (**re-scope to chrome**, not a pagebuilder block)
 - ROB-1983 — hero
 - ROB-1984 — figures
 - ROB-1985 — card-grid (Our Services)
 - ROB-1986 — feature-strip (Why Choose Us)
 - ROB-1987 — pricing
 - ROB-1988 — cta-banner
-- ROB-1989 — footer
+- ROB-1989 — footer (**re-scope to chrome**, not a pagebuilder block)
 
 Each block ticket has its v0 source screenshot inline and the `jonoroboto/v0-taxi-landing-page` repo attached. Universal prop nomenclature (`title`, `text`, `buttons`) and inline `==highlight==` syntax established in the hero ticket apply to every block.
 
-**Dependency graph:** ROB-1993 blocks the 8 block tickets (each needs the renderer for its smoke check). ROB-1994 blocks ROB-1983 / ROB-1985 / ROB-1986 (icon-using blocks). ROB-1995 is blocked by all of the above.
+**Dependency graph:** ROB-1993 (now ✅) unblocks the 6 block tickets (ROB-1983 – ROB-1988). ROB-1994 blocks ROB-1983 / ROB-1985 / ROB-1986 (icon-using blocks). ROB-1995 is blocked by all of the above. ROB-1982 and ROB-1989 (re-scoped chrome) stand alone.
 
 **Out of scope:** any change to `blog` or `authors` schemas; image blocks (those wait for the media work below); CMS integration; admin UI.
 
