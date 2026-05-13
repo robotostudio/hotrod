@@ -30,5 +30,3 @@ pnpm-debug.log*
 
 # playwright/browser artifacts
 .playwright-mcp/
-/hotrod-home.png
-/homepage.png
