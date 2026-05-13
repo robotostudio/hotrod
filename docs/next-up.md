@@ -52,34 +52,19 @@ What landed:
 Spec: `docs/superpowers/specs/2026-05-12-visual-identity-design.md`
 Plan: `docs/superpowers/plans/2026-05-12-visual-identity.md`
 
-## Phase 3 — Pagebuilder blocks for `pages` collection
+## Phase 3 — Pagebuilder blocks for `pages` collection ✅
 
-**Why next:** the design system is live, so block components can be designed against real visual context rather than imagined.
+Shipped 2026-05-13 across two pieces of work:
 
-**Framework tickets (filed 2026-05-13, Hotrod project):**
-- ROB-1993 — Add pagebuilder framework (block-composed pages). ✅ Shipped 2026-05-13. Frontmatter-driven `blocks: [...]` discriminated union; `src/blocks/<name>/` co-located schemas + components; single `registry.ts`; `buildBlocksField()` helper; `<PageSections>` thin vertical-rhythm wrapper; `[...slug].astro` branches on `blocks` presence. Six block stubs in place: hero, figures, card-grid, feature-strip, pricing, cta-banner. Nav and footer were re-scoped as **chrome** (not blocks) during design. Spec: `docs/superpowers/specs/2026-05-13-pagebuilder-framework-design.md`. Plan: `docs/superpowers/plans/2026-05-13-pagebuilder-framework.md`.
-- ROB-1994 — Pick icon strategy and define named icon set. Leaning `astro-icon` + Lucide (build-time inlined SVGs, no JS).
-- ROB-1995 — Migrate existing pages to block-composed model and add /contact.
+**Framework (ROB-1993)** ✅ — frontmatter-driven `blocks: [...]` discriminated union; `src/blocks/<name>/` co-located schemas + components; single `registry.ts`; `buildBlocksField()` helper; `[...slug].astro` branches on `blocks` presence. Six block stubs originally in place. Nav and footer re-scoped as **chrome** during design. `<PageSections>` was landed in this ticket and then **removed in the homepage sprint** — once dividers moved into blocks themselves, the wrapper had no remaining responsibility. Spec: `docs/superpowers/specs/2026-05-13-pagebuilder-framework-design.md`. Plan: `docs/superpowers/plans/2026-05-13-pagebuilder-framework.md`.
 
-**Block tickets (filed 2026-05-13, Hotrod project):**
-- ROB-1982 — navigation-bar (**re-scope to chrome**, not a pagebuilder block)
-- ROB-1983 — hero
-- ROB-1984 — figures
-- ROB-1985 — card-grid (Our Services)
-- ROB-1986 — feature-strip (Why Choose Us)
-- ROB-1987 — pricing
-- ROB-1988 — cta-banner
-- ROB-1989 — footer (**re-scope to chrome**, not a pagebuilder block)
+**Homepage sprint** ✅ — bundled ROB-1982 (nav chrome), ROB-1983–1988 (six real block implementations), ROB-1989 (footer chrome), ROB-1994 (icons), and ROB-1995 (homepage migration + stub pages). Single spec + single plan executed as 17 tasks. Recreates the v0 taxi landing page 1:1 at `/`. Icon strategy: `astro-icon` + `@iconify-json/lucide`, schema field is open `z.string()` (any Lucide name allowed). Divider model: black-bg blocks emit checkerboard dividers at top + bottom of their own markup; yellow-bg blocks emit none; base-layout owns header-bottom and footer-bottom dividers. Spec: `docs/superpowers/specs/2026-05-13-homepage-sprint-design.md`. Plan: `docs/superpowers/plans/2026-05-13-homepage-sprint.md`. Routes added: `/services`, `/pricing`, `/contact` (each a hero + cta-banner stub).
 
-Each block ticket has its v0 source screenshot inline and the `jonoroboto/v0-taxi-landing-page` repo attached. Universal prop nomenclature (`title`, `text`, `buttons`) and inline `==highlight==` syntax established in the hero ticket apply to every block.
+10 routes total on `main`: `/`, `/about`, `/services`, `/services/astro`, `/pricing`, `/contact`, `/blog`, `/blog/welcome-to-hotrod`, `/authors`, `/authors/jono`.
 
-**Dependency graph:** ROB-1993 (now ✅) unblocks the 6 block tickets (ROB-1983 – ROB-1988). ROB-1994 blocks ROB-1983 / ROB-1985 / ROB-1986 (icon-using blocks). ROB-1995 is blocked by all of the above. ROB-1982 and ROB-1989 (re-scoped chrome) stand alone.
+## Phase 4 — Media support (next)
 
-**Out of scope:** any change to `blog` or `authors` schemas; image blocks (those wait for the media work below); CMS integration; admin UI.
-
-## Phase 4 — Media support
-
-**Why fourth:** the storage convention is set and the schemas are the contract — image/video is the next major capability, and once Phase 3's pagebuilder exists, image-bearing blocks (e.g. hero with background image) become possible.
+**Why next:** Phase 3's pagebuilder is live; image-bearing blocks (e.g. hero with background image) become possible, and the storage convention is already set.
 
 **Linear tickets (filed 2026-05-13, Hotrod project):**
 - ROB-1990 — Add Vercel Blob image support (`heroImage`, `avatar`, inline `image` ref, `<BlobImage>` component)
@@ -118,8 +103,8 @@ Each block ticket has its v0 source screenshot inline and the `jonoroboto/v0-tax
 
 Paste this at the start of a fresh session in `/Users/jono/dev/hotrod`:
 
-> I'm continuing work on Hotrod (`/Users/jono/dev/hotrod`), Roboto Studio's agent-first Astro starter. Phases 1 (Vercel deploy) and 2 (visual identity) are shipped on `main`. Tickets are filed in the Hotrod Linear project for Phase 3 (pagebuilder framework + blocks, ROB-1982 – ROB-1989, ROB-1993 – ROB-1995), Phase 4 (media, ROB-1990 – ROB-1992), Phase 5 (CLAUDE.md, ROB-1996), and the optional items (ROB-1997, ROB-1998). The full state — including the dependency graph — is in `docs/next-up.md`. Read it first.
+> I'm continuing work on Hotrod (`/Users/jono/dev/hotrod`), Roboto Studio's agent-first Astro starter. Phases 1 (Vercel deploy), 2 (visual identity), and 3 (pagebuilder + homepage) are shipped on `main`. Tickets are filed in the Hotrod Linear project for Phase 4 (media, ROB-1990 – ROB-1992), Phase 5 (agent docs, ROB-1996), and the optional items (ROB-1997, ROB-1998). The full state — including how Phase 3 actually landed — is in `docs/next-up.md`. Read it first.
 >
-> Conventions to respect: kebab-case filenames everywhere, strict Zod schemas with human-readable error messages, `public/` is chrome only (content media goes to Vercel Blob / Mux). Pages use the frontmatter-driven `blocks: [...]` model (committed to in ROB-1993). For any new tickets, follow the `writing-linear-tickets` skill at `~/dev/skills/skills/writing-linear-tickets/SKILL.md`.
+> Conventions to respect: kebab-case filenames everywhere, strict Zod schemas with human-readable error messages, `public/` is chrome only (content media goes to Vercel Blob / Mux). Pages use the frontmatter-driven `blocks: [...]` model with six real blocks already implemented (hero, figures, card-grid, feature-strip, pricing, cta-banner). Black-bg blocks own their checkerboard dividers; yellow-bg blocks emit none. Icons are any Lucide name via the `<Lucide>` wrapper. For any new tickets, follow the `writing-linear-tickets` skill at `~/dev/skills/skills/writing-linear-tickets/SKILL.md`.
 >
-> The right starting point is ROB-1993 (pagebuilder framework) — it unblocks every block ticket. Walk me through the brainstorming questions before touching code; once we've agreed, write a short spec under `docs/superpowers/specs/`, then a plan under `docs/superpowers/plans/`, then implement.
+> The right starting point is Phase 4 — media support (ROB-1990 Vercel Blob, ROB-1991 Mux, ROB-1992 build-time blob manifest). Walk me through the brainstorming questions before touching code; once we've agreed, write a short spec under `docs/superpowers/specs/`, then a plan under `docs/superpowers/plans/`, then implement.
