@@ -1,5 +1,6 @@
 import { defineCollection, reference, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { buildBlocksField } from './blocks/build-blocks-field';
 
 const dateMessage = (field: string) =>
   `\`${field}\` must be a valid ISO date, e.g. 2026-05-12.`;
@@ -18,6 +19,7 @@ const pages = defineCollection({
       publishedAt: z.coerce.date({ message: dateMessage('publishedAt') }),
       updatedAt: z.coerce.date({ message: dateMessage('updatedAt') }).optional(),
       draft: z.boolean().default(false),
+      blocks: buildBlocksField(),
     })
     .strict(),
 });
