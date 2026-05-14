@@ -1,114 +1,114 @@
 ---
-title: "Hotrod — Fast. Safe. Reliable."
-description: "Your trusted ride across the city. Available 24/7, rain or shine."
+title: "Hotrod — A Zod-typesafe page builder for agentic websites"
+description: "An agent-first Astro starter with strict Zod schemas, Mux + Vercel Blob pre-wired, and guardrails for vibe-coding professional websites."
 publishedAt: 2026-05-12
-updatedAt: 2026-05-13
+updatedAt: 2026-05-14
 blocks:
   - type: hero
     title: "CALL 1800 ==HOT ROD=="
-    text: "Your trusted ride across the city. Available 24/7, rain or shine."
+    text: "The agent-first Astro starter. Zod-typed blocks, Mux + Vercel Blob ready, low deps — plumb it into v0, Replit or Claude Code and start shipping."
     buttons:
-      - label: "Call Now: 1-800-TAXI"
-        href: "tel:1-800-8294"
-        variant: filled
-        icon: phone
-      - label: "Book Online"
+      - label: "Clone the repo"
         href: "/contact"
+        variant: filled
+        icon: zap
+      - label: "Read the docs"
+        href: "/about"
         variant: outlined
         icon: map-pin
   - type: figures
     items:
-      - value: "500K+"
-        label: "Happy Riders"
-      - value: "1000+"
-        label: "Active Drivers"
-      - value: "24/7"
-        label: "Available"
-      - value: "4.9★"
-        label: "Rating"
+      - value: "100%"
+        label: "Typesafe content"
+      - value: "1"
+        label: "pnpm install"
+      - value: "MIT"
+        label: "Licensed"
+      - value: "0"
+        label: "Hand-rolled CMS"
   - type: card-grid
-    title: "OUR SERVICES"
+    title: "WHAT'S UNDER THE HOOD"
     items:
-      - icon: car
-        title: "CITY RIDES"
-        description: "Quick and comfortable rides anywhere in the city. Fixed rates, no surge pricing."
-      - icon: zap
-        title: "EXPRESS"
-        description: "Priority pickup in under 3 minutes. For when you need to be there fast."
-      - icon: users
-        title: "GROUP TRAVEL"
-        description: "Spacious vehicles for groups up to 8. Perfect for events and airport transfers."
-  - type: feature-strip
-    title: "WHY CHOOSE US"
-    items:
-      - icon: clock
-        title: "ALWAYS ON TIME"
-        description: "Punctuality guaranteed or your ride is free"
       - icon: shield
-        title: "100% SAFE"
-        description: "Verified drivers and tracked rides"
-      - icon: star
-        title: "TOP RATED"
-        description: "4.9 stars from 500K+ customers"
+        title: "ZOD-TYPED BLOCKS"
+        description: "Every block is a strict Zod schema. Typo a frontmatter key and the build dies loud — no silent fallbacks, no broken pages in prod."
+      - icon: car
+        title: "MUX + VERCEL BLOB"
+        description: "Pre-wired for external media. Images go to Blob, video goes to Mux, and `public/` stays clean for chrome only."
+      - icon: users
+        title: "AGENT-FIRST"
+        description: "Conventions, scripts, and project structure are tuned for Claude Code, Cursor, v0 and Replit — not hand-editing."
+  - type: feature-strip
+    title: "WHY VIBE-CODERS RIDE HOTROD"
+    items:
+      - icon: shield
+        title: "GUARDRAILS ON"
+        description: "Strict schemas catch agent drift at build time"
       - icon: zap
-        title: "FAST PICKUP"
-        description: "Average wait time under 5 minutes"
+        title: "LOW DEPENDENCY"
+        description: "Astro, Tailwind and Zod. No frameworks you didn't ask for"
+      - icon: star
+        title: "PROFESSIONAL GRADE"
+        description: "Open Graph, sitemaps, fonts API, edge deploys — done"
+      - icon: clock
+        title: "INSTANT START"
+        description: "Install, dev, deploy — you're building in under a minute"
   - type: image-feature
-    heading: "A LEGACY OF EXCELLENCE"
-    body: "For over 35 years, HOTROD has been the heartbeat of city transportation. From our first yellow cab to a fleet of thousands, our commitment to getting you there safely has never wavered."
+    heading: "BUILT TO BE DRIVEN"
+    body: "Hotrod assumes a non-technical owner steering a coding agent. Schemas are strict, errors are loud, and the page builder is just MDX frontmatter — so any agent that can write YAML can ship a marketing page that compiles. Designed at Roboto Studio to be the cleanest possible on-ramp from prompt to production."
     image:
       key: "taxi.jpeg"
       alt: "A yellow taxi at speed under city lights"
-    badge: "SINCE 1987"
+    badge: "OPEN SOURCE"
     stats:
-      - value: "35+"
-        label: "Years of Service"
-      - value: "50M+"
-        label: "Rides Completed"
-      - value: "100+"
-        label: "City Coverage"
+      - value: "Astro 6"
+        label: "Static + edge"
+      - value: "Zod"
+        label: "Every block"
+      - value: "MIT"
+        label: "Use it anywhere"
   - type: pricing
-    title: "SIMPLE PRICING"
+    title: "PICK YOUR DRIVER"
     plans:
-      - name: "STANDARD"
-        price: "$2.50"
-        unit: "/mile"
+      - name: "V0"
+        price: "$0"
+        unit: "/forever"
         features:
-          - "Comfortable sedan"
-          - "Up to 4 passengers"
-          - "A/C included"
-          - "5 min avg pickup"
+          - "Drop into v0.dev"
+          - "Shadcn-style block registry"
+          - "Tailwind v4 tokens"
+          - "Zero-config Vercel deploy"
         cta:
-          label: "SELECT"
+          label: "TRY IT"
           href: "/contact"
-      - name: "EXPRESS"
-        price: "$3.50"
-        unit: "/mile"
+      - name: "CLAUDE CODE"
+        price: "$0"
+        unit: "/forever"
         featured: true
         features:
-          - "Priority pickup"
-          - "Premium vehicles"
-          - "Under 3 min pickup"
-          - "Priority routes"
+          - "CLAUDE.md guardrails baked in"
+          - "Loud Zod failures, no silent drift"
+          - "Strict frontmatter schemas"
+          - "Built for vibe coding"
         cta:
-          label: "SELECT"
+          label: "RECOMMENDED"
           href: "/contact"
-      - name: "GROUP"
-        price: "$4.00"
-        unit: "/mile"
+      - name: "CURSOR / REPLIT"
+        price: "$0"
+        unit: "/forever"
         features:
-          - "XL vehicles"
-          - "Up to 8 passengers"
-          - "Extra luggage space"
-          - "Perfect for events"
+          - "Same Zod schemas"
+          - "Same MDX content shape"
+          - "Same block registry"
+          - "Bring your own IDE"
         cta:
-          label: "SELECT"
+          label: "TRY IT"
           href: "/contact"
   - type: cta-banner
     title: "READY TO RIDE?"
-    text: "Download our app or call us now for instant pickup"
+    text: "Fork the repo, point your agent at it, and start shipping pages that compile."
     buttons:
-      - label: "Download App"
+      - label: "Get the code"
         href: "/contact"
         variant: filled
       - label: "1-800-TAXI"
