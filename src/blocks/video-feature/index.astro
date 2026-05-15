@@ -1,0 +1,60 @@
+---
+import { Icon } from 'astro-icon/components';
+import MuxVideo from '../../components/mux-video.astro';
+import CheckerboardDivider from '../../components/checkerboard-divider.astro';
+
+type Props = {
+  type: 'video-feature';
+  heading: string;
+  body: string;
+  video: { playbackId: string; title: string };
+  badges: { value: string; label: string }[];
+  tiles: { icon: string; label: string }[];
+};
+
+const { heading, body, video, badges, tiles } = Astro.props;
+const topLeft = badges[0];
+const bottomRight = badges[1];
+const tileCols =
+  tiles.length === 2
+    ? 'md:grid-cols-2'
+    : tiles.length === 3
+      ? 'md:grid-cols-3'
+      : 'md:grid-cols-4';
+---
+<CheckerboardDivider />
+<section class="bg-foreground text-background py-20 px-6">
+  <div class="mx-auto max-w-5xl">
+    <h2 class="text-center text-4xl md:text-5xl font-black mb-4">{heading}</h2>
+    <p class="text-center text-lg md:text-xl font-semibold opacity-80 mb-12 max-w-2xl mx-auto">{body}</p>
+
+    <div class="relative">
+      <div class="aspect-video border-8 border-background overflow-hidden">
+        <MuxVideo video={video} class="block w-full h-full" />
+      </div>
+
+      {topLeft && (
+        <div class="absolute -top-6 -left-6 bg-background text-foreground px-5 py-3 hidden md:block">
+          <div class="text-3xl font-black leading-none">{topLeft.value}</div>
+          <div class="text-xs font-bold uppercase tracking-wide">{topLeft.label}</div>
+        </div>
+      )}
+      {bottomRight && (
+        <div class="absolute -bottom-6 -right-6 bg-background text-foreground px-5 py-3 hidden md:block">
+          <div class="text-3xl font-black leading-none">{bottomRight.value}</div>
+          <div class="text-xs font-bold uppercase tracking-wide">{bottomRight.label}</div>
+        </div>
+      )}
+    </div>
+
+    <div class={`grid grid-cols-2 ${tileCols} gap-4 mt-16`}>
+      {tiles.map((tile) => (
+        <div class="bg-background text-foreground flex items-center gap-3 p-4">
+          <Icon name={`lucide:${tile.icon}`} class="size-5 shrink-0" />
+          <span class="font-bold text-sm">{tile.label}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+<CheckerboardDivider />
