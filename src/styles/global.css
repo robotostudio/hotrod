@@ -94,3 +94,15 @@
   --tw-prose-th-borders: var(--background);
   --tw-prose-td-borders: var(--background);
 }
+
+/*
+ * Mux player — brand-yellow accent on the default dark scrim.
+ * Targets media-chrome's CSS vars (Mux player is a thin wrapper on them).
+ */
+mux-player {
+  --media-primary-color: var(--background);
+  --media-accent-color: var(--background);
+  --media-range-thumb-background: var(--background);
+  --media-range-bar-color: var(--background);
+  --media-control-hover-background: color-mix(in oklab, var(--background) 20%, transparent);
+}
