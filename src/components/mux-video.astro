@@ -7,7 +7,7 @@ interface Props {
 }
 
 const { video, class: className } = Astro.props;
-const entry = MUX_MANIFEST[video.playbackId];
+const entry = MUX_MANIFEST[video.playbackId as keyof typeof MUX_MANIFEST] as { assetId: string; aspectRatio: string | null; duration: number | null; status: string; title: string | null } | undefined;
 if (!entry) {
   throw new Error(
     `<MuxVideo> called with unknown playback ID "${video.playbackId}". ` +
