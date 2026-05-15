@@ -6,6 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 import icon from 'astro-icon';
 import { loadEnv } from 'vite';
 import { blobManifest } from './src/integrations/blob-manifest.ts';
+import { muxManifest } from './src/integrations/mux-manifest.ts';
 import { hotrodTaxiTheme } from './src/integrations/shiki-hotrod-taxi.ts';
 
 // Load .env, .env.local, and mode-specific env files into process.env so that
@@ -30,7 +31,7 @@ export default defineConfig({
       { protocol: 'https', hostname: '*.public.blob.vercel-storage.com' },
     ],
   },
-  integrations: [mdx(), icon(), blobManifest()],
+  integrations: [mdx(), icon(), blobManifest(), muxManifest()],
   markdown: {
     shikiConfig: {
       theme: hotrodTaxiTheme,
