@@ -21,6 +21,8 @@
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",
     "@astrojs/vercel": "^10.0.6",
+    "@mux/mux-node": "^14.0.1",
+    "@mux/mux-player": "^3.13.0",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.3.0",
     "@vercel/blob": "^2.3.3",
