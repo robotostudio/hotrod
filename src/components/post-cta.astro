@@ -1,0 +1,28 @@
+---
+import Lucide from './lucide.astro';
+
+type Props = {
+  heading?: string;
+  text?: string;
+  buttonLabel?: string;
+  href?: string;
+};
+
+const {
+  heading = 'LIKE WHAT YOU SEE?',
+  text = 'The team that built Hotrod builds production sites for a living. Hand the brief over and skip the part where you fight the framework.',
+  buttonLabel = 'GET IN TOUCH',
+  href = '/contact',
+} = Astro.props;
+---
+<aside class="not-prose my-12 bg-background text-foreground border-4 border-background p-8 md:p-10">
+  <h3 class="text-3xl md:text-4xl font-black mb-3 tracking-tight">{heading}</h3>
+  <p class="text-lg font-semibold mb-6 max-w-2xl">{text}</p>
+  <a
+    href={href}
+    class="inline-flex items-center gap-2 bg-foreground text-background hover:bg-foreground/90 font-bold text-lg px-8 py-4 transition-colors"
+  >
+    {buttonLabel}
+    <Lucide name="arrow-right" class="w-5 h-5" />
+  </a>
+</aside>

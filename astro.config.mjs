@@ -6,6 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 import icon from 'astro-icon';
 import { loadEnv } from 'vite';
 import { blobManifest } from './src/integrations/blob-manifest.ts';
+import { hotrodTaxiTheme } from './src/integrations/shiki-hotrod-taxi.ts';
 
 // Load .env, .env.local, and mode-specific env files into process.env so that
 // integrations running at astro:config:setup (e.g. blobManifest) can read
@@ -30,6 +31,11 @@ export default defineConfig({
     ],
   },
   integrations: [mdx(), icon(), blobManifest()],
+  markdown: {
+    shikiConfig: {
+      theme: hotrodTaxiTheme,
+    },
+  },
   vite: {
     plugins: [tailwindcss()],
   },

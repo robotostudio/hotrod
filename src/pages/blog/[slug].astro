@@ -1,17 +1,25 @@
 ---
-import PostLayout from '../../layouts/post-layout.astro';
+import BaseLayout from '../../layouts/base-layout.astro';
+import CheckerboardDivider from '../../components/checkerboard-divider.astro';
+import Lucide from '../../components/lucide.astro';
 import { getPublishedPosts } from '../../lib/content';
+import { formatDate } from '../../lib/format-date';
+import { readingTime } from '../../lib/reading-time';
 import { getEntry, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
-  return posts.map((post) => ({
+  return posts.map((post, index) => ({
     params: { slug: post.id },
-    props: { post },
+    props: {
+      post,
+      prev: posts[index - 1] ?? null,
+      next: posts[index + 1] ?? null,
+    },
   }));
 }
 
-const { post } = Astro.props;
+const { post, prev, next } = Astro.props;
 const author = await getEntry(post.data.author);
 if (!author) {
   throw new Error(
@@ -19,15 +27,128 @@ if (!author) {
   );
 }
 const { Content } = await render(post);
-const { title, description, publishedAt, updatedAt } = post.data;
+const { title, description, publishedAt, updatedAt, tags } = post.data;
+const category = tags[0] ? tags[0].toUpperCase() : null;
 ---
 
-<PostLayout
+<BaseLayout
   title={title}
   description={description}
+  type="article"
   publishedAt={publishedAt}
   updatedAt={updatedAt}
-  author={author}
 >
-  <Content />
-</PostLayout>
+  <section class="bg-background text-foreground pt-12 pb-6 px-6">
+    <div class="mx-auto max-w-4xl">
+      <a
+        href="/blog"
+        class="inline-flex items-center gap-2 font-bold hover:underline underline-offset-4"
+      >
+        <Lucide name="arrow-left" class="w-5 h-5" />
+        BACK TO ALL POSTS
+      </a>
+    </div>
+  </section>
+
+  <section class="bg-background text-foreground pb-16 px-6">
+    <div class="mx-auto max-w-4xl">
+      {category && (
+        <span class="inline-block bg-foreground text-background px-4 py-2 font-black text-sm mb-6">
+          {category}
+        </span>
+      )}
+      <h1 class="text-5xl md:text-6xl font-black mb-6 tracking-tight text-balance">
+        {title.toUpperCase()}
+      </h1>
+      <p class="text-xl md:text-2xl font-semibold mb-8 opacity-90">{description}</p>
+      <div class="flex flex-wrap items-center gap-6 text-sm font-bold">
+        <span class="flex items-center gap-2">
+          <Lucide name="user" class="w-5 h-5" />
+          {author.data.name}
+        </span>
+        <span class="flex items-center gap-2">
+          <Lucide name="calendar" class="w-5 h-5" />
+          {formatDate(publishedAt)}
+        </span>
+        <span class="flex items-center gap-2">
+          <Lucide name="clock" class="w-5 h-5" />
+          {readingTime(post.body)}
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <CheckerboardDivider />
+
+  <section class="bg-foreground text-background py-20 px-6">
+    <div class="mx-auto max-w-4xl">
+      <article class="prose prose-on-dark prose-lg max-w-none">
+        <Content />
+      </article>
+    </div>
+  </section>
+
+  <CheckerboardDivider />
+
+  <section class="bg-background text-foreground py-16 px-6">
+    <div class="mx-auto max-w-4xl">
+      <div class="bg-foreground text-background border-4 border-foreground p-8">
+        <div class="flex flex-col sm:flex-row items-center gap-6">
+          <div class="w-24 h-24 bg-background flex items-center justify-center flex-shrink-0">
+            <Lucide name="user" class="w-12 h-12 text-foreground" />
+          </div>
+          <div class="text-center sm:text-left">
+            <h3 class="text-2xl font-black mb-1">
+              <a href={`/authors/${author.id}`} class="hover:underline underline-offset-4">
+                {author.data.name}
+              </a>
+            </h3>
+            {author.data.role && (
+              <p class="font-semibold opacity-80 mb-3">{author.data.role}</p>
+            )}
+            <p class="font-medium opacity-90">{author.data.shortBio}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {(prev || next) && (
+    <>
+      <CheckerboardDivider />
+      <section class="bg-foreground text-background py-16 px-6">
+        <div class="mx-auto max-w-4xl">
+          <div class="grid md:grid-cols-2 gap-6">
+            {prev ? (
+              <a
+                href={`/blog/${prev.id}`}
+                class="block bg-background text-foreground border-4 border-background hover:border-white transition-colors p-6 h-full"
+              >
+                <span class="text-sm font-bold opacity-70 flex items-center gap-2 mb-2">
+                  <Lucide name="arrow-left" class="w-4 h-4" />
+                  PREVIOUS POST
+                </span>
+                <h4 class="text-xl font-black">{prev.data.title.toUpperCase()}</h4>
+              </a>
+            ) : (
+              <div />
+            )}
+            {next && (
+              <a
+                href={`/blog/${next.id}`}
+                class="block bg-background text-foreground border-4 border-background hover:border-white transition-colors p-6 h-full md:col-start-2"
+              >
+                <span class="text-sm font-bold opacity-70 flex items-center gap-2 justify-end mb-2">
+                  NEXT POST
+                  <Lucide name="arrow-right" class="w-4 h-4" />
+                </span>
+                <h4 class="text-xl font-black text-right">{next.data.title.toUpperCase()}</h4>
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+      <CheckerboardDivider />
+    </>
+  )}
+</BaseLayout>

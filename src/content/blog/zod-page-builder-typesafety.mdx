@@ -1,0 +1,80 @@
+---
+title: "Why strict Zod schemas are the only way to scale a page-builder"
+description: "Every page-builder starts strict and ends as `any`. Here's the small set of rules that keep Hotrod's block system honest as it grows."
+publishedAt: 2026-05-13
+author: jono
+tags:
+  - "typesafety"
+  - "pagebuilder"
+---
+import PostCTA from '../../components/post-cta.astro';
+
+If you've ever inherited a page-builder, you know the smell. The first three blocks are beautifully typed. The fourth one accepts a `data: any` prop "for now." The fifth one is a copy-paste of the fourth with one field renamed. By block fifteen the schema is a `Record<string, unknown>`, every component starts with `// @ts-expect-error`, and the only person who knows what the CMS will actually send is the developer who left two months ago.
+
+Hotrod is designed so that doesn't happen. The page-builder is built around a handful of rules that sound boring and turn out to be load-bearing.
+
+## Rule 1: every block is a Zod schema first
+
+A block in Hotrod isn't a component file. It's a folder under `src/blocks/` with two siblings:
+
+- `schema.ts` — a Zod object describing the block's data shape
+- `index.astro` — the component that renders that data
+
+The schema is the contract. Everything else — TypeScript types, content validation, agent prompts, error messages — falls out of it. We don't write a separate TypeScript type and pray it stays in sync. The component receives `z.infer` of its own schema and we're done.
+
+## Rule 2: blocks live in a discriminated union
+
+`src/blocks/registry.ts` collects every block schema into one discriminated union keyed by `type`. That single union is what `content.config.ts` uses to type the `blocks` field on the `pages` collection.
+
+What that buys you, in practice:
+
+When an MDX page has `blocks: [{ type: "hero", title: "..." }]`, Astro's content layer validates it against the union at build time. If `hero` requires a `title` and the page is missing one, the build fails with the file name, the block index, and the missing field. If the page references `type: "heeero"`, the discriminator catches it as an invalid value and lists every valid block type alongside the error. The agent gets a runnable suggestion. No silent rendering of a half-built page.
+
+This is the property that makes the system scale. Adding a block doesn't loosen anything. Every new schema joins the union; every consumer of the union is checked again automatically.
+
+## Rule 3: no load-bearing optionals
+
+We have a memory pinned in the project that says: *strict Zod schemas, no load-bearing optionals, loud build-time failures over silent fallbacks.* That's not aesthetic preference — it's what keeps the page-builder from rotting.
+
+The temptation, every single time you add a new block, is to mark fields optional "for flexibility." The hero's `subtitle` is optional. The card grid's `cta` is optional. The pricing block's `featuredIndex` is optional. Six months later, the component is a maze of `?.` chains and "what if this is undefined" branches, and nobody can tell which field is genuinely optional and which one is "we just didn't fill it in yet."
+
+Hotrod's rule: if rendering the block correctly *requires* the field, the field is required. If it really is optional (an avatar image, a secondary link), it's optional and the component has a defined behaviour for its absence. There is no third state.
+
+The same rule applies to the content collections themselves. The blog schema declares `title`, `description`, `publishedAt`, and `author` as required. Forget one, and the build refuses to start with an error that names the file. The site never serves a post with a missing title because the build that would have produced it never finished.
+
+## Rule 4: schema errors are the agent's primary feedback loop
+
+Agents debug from error output. Vague errors waste tokens. Specific errors are gold.
+
+Every required string in Hotrod's schemas uses a helper that produces messages like:
+
+```ts
+const requiredString = (field: string) =>
+  z.string({ message: `\`${field}\` is required.` })
+   .min(1, { message: `\`${field}\` must not be empty.` });
+```
+
+The reason is mundane and important. When an agent edits an MDX file and runs `astro build`, it reads the error message and tries again. A message that says ``\`title\` is required.`` produces a correct second attempt. A message that says `ZodError: Invalid input` produces a guess.
+
+Reserve your specificity budget for the schema error layer. It pays for itself every day.
+
+## Rule 5: blocks register, don't import
+
+When you add a new block, you do exactly two things:
+
+1. Create the folder with `schema.ts` and `index.astro`.
+2. Add one line to `src/blocks/registry.ts`.
+
+That's it. The discriminated union picks it up. The `<PageSections>` renderer iterates the typed array and dispatches on `type`. There's no central component file that grows with the number of blocks. There's no map of strings to components that needs to stay in sync. The registry is the map.
+
+This is the property that lets a coding agent add a block on its own. It doesn't have to grep the codebase for "where do I register this." The path is mechanical, documented, and short.
+
+<PostCTA heading="WANT A SITE THAT WORKS LIKE THIS?" text="Roboto Studio designs and ships type-safe Astro sites for clients every week. If you'd rather hand the brief over than wire it up yourself, that's what we do." />
+
+## The boring truth
+
+None of this is exciting. Discriminated unions, required fields, registry maps, specific error strings. Page-builders rot because the boring discipline is exactly the part that gets dropped first when the team is shipping.
+
+The reason Hotrod can stay small and stay correct is that we treat the schema layer the way other projects treat tests: as the thing you don't compromise on, even when you're tired and it's Friday.
+
+If you're building a page-builder of your own, the rules above port directly. Start strict. Stay strict. Refuse the optional. Let the build complain.

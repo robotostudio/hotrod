@@ -34,6 +34,7 @@ const blog = defineCollection({
       updatedAt: z.coerce.date({ message: dateMessage('updatedAt') }).optional(),
       author: reference('authors'),
       tags: z.array(z.string()).default([]),
+      featured: z.boolean().default(false),
       draft: z.boolean().default(false),
     })
     .strict(),

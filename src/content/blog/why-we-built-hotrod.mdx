@@ -1,0 +1,69 @@
+---
+title: "Why we built Hotrod"
+description: "Agentic websites are no longer a thought experiment. Hotrod is the starter we wished existed when people kept asking how to vibe-code a real marketing site."
+publishedAt: 2026-05-14
+author: jono
+tags:
+  - "agents"
+  - "rationale"
+featured: true
+---
+import PostCTA from '../../components/post-cta.astro';
+
+The question we hear every week now goes something like this: *"I want to vibe-code my own marketing site. I can describe what I want. The agent can build it. But every starter I try either locks me into a closed CMS or assumes I'm a senior frontend engineer. What do I actually use?"*
+
+Hotrod is our answer.
+
+## The gap nobody is filling
+
+The mainstream frontend story right now is split into two camps that both fail the agentic-website use case.
+
+On one side: hosted page-builders. Wix, Squarespace, Framer, Webflow. They get a non-technical owner to a live site faster than anything else on Earth. But the abstractions are owned by the vendor. The moment you want a content collection that isn't blog posts, an SEO sitemap that does what you tell it, a component your agent can extend without permission, or a database the rest of your stack can talk to, you hit a wall. Pricing scales with success.
+
+On the other side: blank-canvas frameworks. Next.js, Astro, Remix, SvelteKit. Infinitely flexible. Also infinitely intimidating to a non-engineer with a coding agent in a side panel. The first prompt builds a button. The fiftieth prompt is debugging an obscure hydration error. There is no on-ramp.
+
+What an owner-plus-agent pair actually wants is a starter that:
+
+- ships with a recognisable, opinionated visual identity that they can repaint
+- has a real content collection system, not just `pages/`
+- has typed, registered building blocks for a page-builder layout
+- has the production concerns (deploys, images, video, SEO) already wired up
+- fails loudly when the schema is wrong, so the agent learns from the error instead of generating broken content
+
+That's the shape of Hotrod.
+
+## What "agentic-friendly" actually means
+
+It's tempting to say "Hotrod is good for AI agents" and leave it there. That isn't useful. The concrete properties that make a codebase agent-friendly are:
+
+**Errors that name themselves.** When an MDX file has a bad frontmatter field, the error names the file, the field, and what was expected. Agents debug from error output. Generic stack traces waste tokens.
+
+**Schemas as the source of truth.** Every content type, every page-builder block, every author profile is described by a Zod schema. The agent reads the schema and knows exactly which fields exist, which are required, and which values are allowed.
+
+**No optional fields that quietly fall back.** If something is required for a block to render, it is required in the schema. We don't paper over missing data with "" or null. The build fails. The agent rewrites the content. The site stays correct.
+
+**Routes that mirror the file tree.** No clever rewrites buried in middleware. If `/services/astro` exists, it's because `src/content/pages/services/astro.mdx` exists.
+
+**No invisible state.** Everything that affects the rendered site is in the repo: content, blocks, brand tokens, layout. No CMS that the agent can't read. No design system trapped behind an SSO login.
+
+## How it stays small
+
+Hotrod has rules about its own dependencies. We didn't reach for shadcn or Radix or BaseUI even when the source design we ported clearly used them. The chrome is a few hundred lines of Astro + Tailwind utility classes. The icon set is `astro-icon` + Lucide, which is two packages and no runtime JavaScript. The MDX pipeline is the one Astro ships with.
+
+The starter is meant to be read end-to-end in a sitting. If you can't read the codebase, you can't audit what your agent is doing inside it.
+
+## Who Hotrod is for
+
+If you're a non-technical founder with a coding agent on your laptop and a marketing site to ship, Hotrod is for you. The flow we designed for is: clone, repaint, write content, deploy. No CMS sign-up. No design system onboarding. No "OK now configure Tailwind."
+
+If you're an agency or a freelance dev, Hotrod is for you too — it's the kind of starter we used to build for clients ourselves, except now it's free, open source, and you can hand it to your AI pair for the boring parts.
+
+If you're an engineer who hates that every starter ships with a hundred dependencies you'll never use, Hotrod is *especially* for you.
+
+<PostCTA />
+
+## What's next
+
+The roadmap is short and public. Next up: a Sanity adapter for teams who want a hosted editor on top of the same schema layer, a Mux video block to match the image block, and a small library of additional page-builder blocks (FAQ, testimonial wall, logo grid). All of it stays within the same rule: every new block is a Zod schema, a registry entry, and an Astro component. No magic.
+
+If you build something with Hotrod, send it to us. We want to see what people are shipping.
