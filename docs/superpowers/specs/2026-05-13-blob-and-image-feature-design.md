@@ -2,7 +2,7 @@
 
 **Status:** Design approved 2026-05-13. Awaiting plan.
 **Tickets:** ROB-1990 (Blob image support), ROB-1992 (build-time blob manifest), plus one new ticket for the `image-feature` block.
-**Out of scope:** Mux / video support — that's Spec B (`docs/superpowers/specs/2026-05-13-mux-and-video-feature-design.md` once it exists). `heroImage` / `avatar` schema fields on existing collections. Inline `image` MDX shortcodes. Image transformation controls beyond Astro's defaults. Upload tooling. Hot reload of the manifest in dev. Caching the manifest between builds.
+**Out of scope:** Mux / video support — that's Spec B (`docs/superpowers/specs/2026-05-15-mux-and-video-feature-design.md`). `heroImage` / `avatar` schema fields on existing collections. Inline `image` MDX shortcodes. Image transformation controls beyond Astro's defaults. Upload tooling. Hot reload of the manifest in dev. Caching the manifest between builds.
 
 ## 1. Goal
 
