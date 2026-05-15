@@ -11,6 +11,7 @@ type Props = {
   type?: 'website' | 'article';
   publishedAt?: Date;
   updatedAt?: Date;
+  markdownHref?: string;
 };
 
 const {
@@ -19,6 +20,7 @@ const {
   type = 'website',
   publishedAt,
   updatedAt,
+  markdownHref,
 } = Astro.props;
 ---
 
@@ -41,6 +43,9 @@ const {
     )}
     {type === 'article' && updatedAt && (
       <meta property="article:modified_time" content={updatedAt.toISOString()} />
+    )}
+    {markdownHref && (
+      <link rel="alternate" type="text/markdown" href={markdownHref} />
     )}
   </head>
   <body class="min-h-screen bg-background text-foreground font-sans antialiased">
