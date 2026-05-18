@@ -22,6 +22,7 @@ for (const [key, value] of Object.entries(env)) {
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://hotrod.robotostudio.com',
   output: 'static',
   adapter: vercel({
     imageService: true,
