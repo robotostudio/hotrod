@@ -5,34 +5,110 @@ import CheckerboardDivider from '../components/checkerboard-divider.astro';
 import SiteNav from '../components/site-nav.astro';
 import SiteFooter from '../components/site-footer.astro';
 
+type AuthorMeta = { name: string; url?: string };
+
 type Props = {
   title: string;
   description: string;
+  /** Optional override for `<meta name="description">` and og:description. Falls back to `description`. */
+  metaDescription?: string;
   type?: 'website' | 'article';
   publishedAt?: Date;
   updatedAt?: Date;
+  author?: AuthorMeta;
+  /** Absolute URL to a custom OG image. Falls back to the auto-generated /og/<slug>.png. */
+  ogImageOverride?: string;
   markdownHref?: string;
+  /** Override the default JSON-LD payload (e.g. Person schema for author pages). */
+  jsonLd?: unknown;
 };
 
 const SITE_NAME = 'Hotrod';
+const ORG_NAME = 'Roboto Studio';
+const ORG_URL = 'https://robotostudio.com';
 
 const {
   title,
   description,
+  metaDescription,
   type = 'website',
   publishedAt,
   updatedAt,
+  author,
+  ogImageOverride,
   markdownHref,
+  jsonLd,
 } = Astro.props;
 
 const pathname = Astro.url.pathname.replace(/\/$/, '');
 const isHome = pathname === '';
 const ogSlug = isHome ? 'index' : pathname.replace(/^\//, '');
 const baseUrl = Astro.site ?? Astro.url;
-const ogImageUrl = new URL(`/og/${ogSlug}.png`, baseUrl).toString();
+const ogImageUrl = ogImageOverride ?? new URL(`/og/${ogSlug}.png`, baseUrl).toString();
 const canonicalUrl = new URL(pathname === '' ? '/' : `${pathname}/`, baseUrl).toString();
 const fullTitle = isHome ? title : `${title} | ${SITE_NAME}`;
 const ogImageAlt = isHome ? title : `${title} — ${SITE_NAME}`;
+const seoDescription = metaDescription ?? description;
+const rssUrl = new URL('/rss.xml', baseUrl).toString();
+
+function buildDefaultJsonLd(): unknown {
+  const publisher = {
+    '@type': 'Organization',
+    name: ORG_NAME,
+    url: ORG_URL,
+  };
+  if (type === 'article') {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: title,
+      description: seoDescription,
+      image: ogImageUrl,
+      datePublished: publishedAt?.toISOString(),
+      dateModified: (updatedAt ?? publishedAt)?.toISOString(),
+      mainEntityOfPage: canonicalUrl,
+      ...(author
+        ? {
+            author: {
+              '@type': 'Person',
+              name: author.name,
+              ...(author.url ? { url: author.url } : {}),
+            },
+          }
+        : {}),
+      publisher,
+    };
+  }
+  if (isHome) {
+    return [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: SITE_NAME,
+        url: baseUrl.toString(),
+        description: seoDescription,
+      },
+      {
+        '@context': 'https://schema.org',
+        ...publisher,
+      },
+    ];
+  }
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: title,
+    description: seoDescription,
+    url: canonicalUrl,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: SITE_NAME,
+      url: baseUrl.toString(),
+    },
+  };
+}
+
+const resolvedJsonLd = jsonLd ?? buildDefaultJsonLd();
 ---
 
 <!doctype html>
@@ -40,17 +116,21 @@ const ogImageAlt = isHome ? title : `${title} — ${SITE_NAME}`;
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#FFD700" />
     <Font cssVariable="--font-sans" preload />
     <Font cssVariable="--font-mono" />
     <title>{fullTitle}</title>
-    <meta name="description" content={description} />
+    <meta name="description" content={seoDescription} />
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Hotrod blog" href={rssUrl} />
     <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={seoDescription} />
     <meta property="og:type" content={type} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:locale" content="en_GB" />
@@ -60,7 +140,7 @@ const ogImageAlt = isHome ? title : `${title} — ${SITE_NAME}`;
     <meta property="og:image:alt" content={ogImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:description" content={seoDescription} />
     <meta name="twitter:image" content={ogImageUrl} />
     <meta name="twitter:image:alt" content={ogImageAlt} />
     {type === 'article' && publishedAt && (
@@ -69,9 +149,13 @@ const ogImageAlt = isHome ? title : `${title} — ${SITE_NAME}`;
     {type === 'article' && updatedAt && (
       <meta property="article:modified_time" content={updatedAt.toISOString()} />
     )}
+    {type === 'article' && author && (
+      <meta name="author" content={author.name} />
+    )}
     {markdownHref && (
       <link rel="alternate" type="text/markdown" href={markdownHref} />
     )}
+    <script type="application/ld+json" set:html={JSON.stringify(resolvedJsonLd)} />
   </head>
   <body class="min-h-screen bg-background text-foreground font-sans antialiased">
     <SiteNav />

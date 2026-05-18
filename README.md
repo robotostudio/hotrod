@@ -56,9 +56,39 @@ Content media (post hero images, author avatars, embedded video) is **not** stor
 - Images → [Vercel Blob](https://vercel.com/docs/vercel-blob)
 - Video → [Mux](https://mux.com/)
 
-`public/` is reserved for site chrome only: favicons, `manifest.json`, `robots.txt`, and an Open Graph fallback image. Frontmatter fields that point at media will reference external storage (blob keys or Mux playback IDs), not local file paths.
+`public/` is reserved for site chrome only: the favicon SVG and `robots.txt`. Other icon assets (`apple-touch-icon.png`, `icon-192.png`, `icon-512.png`) and the web manifest are rendered at build time from `src/lib/icon-image.ts` so the design stays in sync with the favicon. Frontmatter fields that point at media reference external storage (blob keys or Mux playback IDs), not local file paths.
 
-Media support isn't wired up yet — the first content pass is text-only.
+## SEO and social
+
+Every page gets full meta tags, an auto-generated Open Graph image, JSON-LD structured data, and entries in `sitemap-index.xml` / `rss.xml`. There's no per-page configuration to wire — the layouts do it from frontmatter.
+
+### The contract per page
+
+| Field | Required | Used in |
+| :--- | :--- | :--- |
+| `title` | yes | `<title>`, og:title, OG image text |
+| `description` | yes (80–220 chars) | On-page lede, `<meta name="description">`, og:description |
+| `metaDescription` | optional override | Wins over `description` for meta tags only — use when the on-page intro doesn't make a great SERP snippet |
+
+Length rules are enforced by Zod in `src/content.config.ts`. A description under 80 chars or over 220 fails the build with a clear message. Aim for 120–160; that's the sweet spot Google won't truncate or rewrite.
+
+### Open Graph images
+
+Every page has an auto-generated 1200×630 PNG at `/og/<slug>.png`, rendered by [Takumi](https://takumi.kane.tw/) from `src/lib/og-image.ts`:
+
+- Home → centred "CALL 1800 HOT ROD" brand banner with chequer on top and bottom.
+- Everything else → title bottom-left in black on yellow, chequer strip below.
+
+The base layout points `og:image` and `twitter:image` at the right slug automatically. No frontmatter required.
+
+### Other things baked in
+
+- `sitemap-index.xml` (via `@astrojs/sitemap`) — OG image routes filtered out.
+- `rss.xml` (via `@astrojs/rss`) — all published blog posts, newest first.
+- `robots.txt` — explicit allow for AI crawlers (GPTBot, ClaudeBot, PerplexityBot, etc.) plus a sitemap pointer. Edit `public/robots.txt` to opt out.
+- JSON-LD — `Article` on blog posts, `WebSite` + `Organization` on home, `Person` on author pages, `WebPage` everywhere else.
+- `manifest.webmanifest`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png` — rendered from the same checker design as the favicon.
+- Markdown twins — every blog post has a `/blog/<slug>.md` companion for agents and `llms.txt` / `llms-full.txt` indices.
 
 ## Design
 

@@ -27,16 +27,18 @@ if (!author) {
   );
 }
 const { Content } = await render(post);
-const { title, description, publishedAt, updatedAt, tags } = post.data;
+const { title, description, metaDescription, publishedAt, updatedAt, tags } = post.data;
 const category = tags[0] ? tags[0].toUpperCase() : null;
 ---
 
 <BaseLayout
   title={title}
   description={description}
+  metaDescription={metaDescription}
   type="article"
   publishedAt={publishedAt}
   updatedAt={updatedAt}
+  author={{ name: author.data.name, url: new URL(`/authors/${author.id}/`, Astro.site ?? Astro.url).toString() }}
   markdownHref={`/blog/${post.id}.md`}
 >
   <section class="bg-background text-foreground pt-12 pb-6 px-6">

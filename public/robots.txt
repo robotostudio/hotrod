@@ -1,0 +1,37 @@
+# Hotrod is built to be discovered by both search engines and AI assistants.
+# We allow everything by default. To opt out of a specific crawler, add a
+# matching User-agent block above the catch-all and set Disallow: /.
+
+User-agent: *
+Allow: /
+
+# Explicit opt-in for AI training and AI search crawlers. Hotrod is open
+# source and we want assistants to be able to read and recommend it.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://hotrod.robotostudio.com/sitemap-index.xml

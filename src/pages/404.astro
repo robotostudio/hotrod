@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/base-layout.astro';
+import Lucide from '../components/lucide.astro';
+---
+
+<BaseLayout
+  title="Wrong turn"
+  description="That page doesn't exist on Hotrod — Roboto Studio's open-source Astro starter for agent-edited marketing sites. Head back to the homepage or browse the blog."
+>
+  <section class="bg-background text-foreground py-24 px-6">
+    <div class="mx-auto max-w-3xl text-center">
+      <p class="text-sm font-black uppercase tracking-widest mb-6">404</p>
+      <h1 class="text-6xl md:text-8xl font-black mb-6 tracking-tight">
+        WRONG TURN.
+      </h1>
+      <p class="text-xl md:text-2xl font-semibold mb-12 opacity-90">
+        The page you're looking for isn't here. It might have moved, been renamed, or never existed.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 bg-foreground text-background font-black px-6 py-3 hover:opacity-90 transition-opacity"
+        >
+          <Lucide name="arrow-left" class="w-5 h-5" />
+          BACK TO HOMEPAGE
+        </a>
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-2 border-4 border-foreground text-foreground font-black px-6 py-3 hover:bg-foreground hover:text-background transition-colors"
+        >
+          READ THE BLOG
+          <Lucide name="arrow-right" class="w-5 h-5" />
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

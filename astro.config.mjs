@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import mdx from '@astrojs/mdx';
+import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import icon from 'astro-icon';
@@ -32,7 +33,15 @@ export default defineConfig({
       { protocol: 'https', hostname: '*.public.blob.vercel-storage.com' },
     ],
   },
-  integrations: [mdx(), icon(), blobManifest(), muxManifest()],
+  integrations: [
+    mdx(),
+    icon(),
+    sitemap({
+      filter: (page) => !page.includes('/og/'),
+    }),
+    blobManifest(),
+    muxManifest(),
+  ],
   markdown: {
     shikiConfig: {
       theme: hotrodTaxiTheme,

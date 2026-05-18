@@ -9,9 +9,35 @@ type Props = {
 
 const { author, posts } = Astro.props;
 const { name, role, shortBio, social } = author.data;
+
+const baseUrl = Astro.site ?? Astro.url;
+const profileUrl = new URL(`/authors/${author.id}/`, baseUrl).toString();
+const sameAs = [
+  social.twitter && `https://twitter.com/${social.twitter}`,
+  social.github && `https://github.com/${social.github}`,
+  social.linkedin && `https://linkedin.com/in/${social.linkedin}`,
+  social.website,
+].filter((href): href is string => Boolean(href));
+
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name,
+  url: profileUrl,
+  description: shortBio,
+  ...(role ? { jobTitle: role } : {}),
+  ...(sameAs.length > 0 ? { sameAs } : {}),
+};
+
+const metaDescription = `${shortBio}${role ? ` ${role} at Roboto Studio.` : ''} Writing on Hotrod — the agent-first Astro starter for agent-edited marketing sites.`;
 ---
 
-<BaseLayout title={name} description={shortBio}>
+<BaseLayout
+  title={name}
+  description={shortBio}
+  metaDescription={metaDescription}
+  jsonLd={personJsonLd}
+>
   <div class="mx-auto max-w-3xl px-6 py-12">
     <article class="prose">
       <h1>{name}</h1>

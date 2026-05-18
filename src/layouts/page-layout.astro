@@ -4,16 +4,18 @@ import BaseLayout from './base-layout.astro';
 type Props = {
   title: string;
   description: string;
+  metaDescription?: string;
   publishedAt: Date;
   updatedAt?: Date;
 };
 
-const { title, description, publishedAt, updatedAt } = Astro.props;
+const { title, description, metaDescription, publishedAt, updatedAt } = Astro.props;
 ---
 
 <BaseLayout
   title={title}
   description={description}
+  metaDescription={metaDescription}
   publishedAt={publishedAt}
   updatedAt={updatedAt}
 >
