@@ -1,6 +1,6 @@
 # Hotrod
 
-[Roboto Studio](https://robotostudio.com)'s open-source, agent-first website starter. Built on [Astro](https://astro.build/) and tailored for sites that are built, edited, and maintained primarily by coding agents.
+[Roboto Studio](https://robotostudio.com/services/agentic-websites)'s open-source, agent-first website starter. Built on [Astro](https://astro.build/) and tailored for sites that are built, edited, and maintained primarily by coding agents.
 
 > Heads up: Hotrod assumes you are driving development through an agent (Claude Code, Cursor, etc.). Conventions, scripts, and project structure are tuned for that workflow rather than hand-editing.
 
