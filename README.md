@@ -76,7 +76,7 @@ Length rules are enforced by Zod in `src/content.config.ts`. A description under
 
 Every page has an auto-generated 1200×630 PNG at `/og/<slug>.png`, rendered by [Takumi](https://takumi.kane.tw/) from `src/lib/og-image.ts`:
 
-- Home → centred "CALL 1800 HOT ROD" brand banner with chequer on top and bottom.
+- Home → centred "CALL 0800 HOT ROD" brand banner with chequer on top and bottom.
 - Everything else → title bottom-left in black on yellow, chequer strip below.
 
 The base layout points `og:image` and `twitter:image` at the right slug automatically. No frontmatter required.

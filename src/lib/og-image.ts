@@ -100,7 +100,7 @@ function homeVariant(): Node {
           gap: 20,
         },
         children: [
-          text('CALL 1800', {
+          text('CALL 0800', {
             fontFamily: 'Geist',
             fontWeight: 900,
             color: BLACK,
