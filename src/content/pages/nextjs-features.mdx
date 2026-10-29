@@ -1,0 +1,91 @@
+---
+title: "Next.js 16.3 features"
+description: "Everything new in Next.js 16.3: faster dev and builds, Instant Navigations, better tooling for AI agents, and experimental features you can try today."
+publishedAt: 2026-10-29
+---
+
+Next.js 16.3 was announced on August 3rd 2026. It is described as the biggest update to the framework since Next.js 16.0. Source: [nextjs.org/blog/next-16-3](https://nextjs.org/blog/next-16-3).
+
+## Improvements for today's apps
+
+These improvements come with zero changes to your application code.
+
+### Less memory usage in dev
+
+Turbopack uses up to 90% less memory when running the dev server. On the vercel.com dashboard, memory after compiling 50 routes dropped from 21.5 GB to 2 GB. On nextjs.org it dropped from 4,600 MB to 840 MB.
+
+### Faster builds
+
+Disk caching now works for production builds and is on by default. Some projects see 5.5x faster builds on CI. On nextjs.org, the compile step went from 21s to 9.2s with the cache.
+
+### Faster type checking with TypeScript 7
+
+Next.js builds can use TypeScript 7, a 10x faster native port of TypeScript, for type checking.
+
+### Faster server-side rendering
+
+Replacing web streams with native Node.js streams in the App Router lets apps handle up to 22% more requests under load.
+
+### Versioned docs for AI agents
+
+AI coding agents automatically read documentation that matches your project's version of Next.js, with no setup.
+
+### Fewer prefetch requests
+
+Small prefetches are bundled together, so links trigger fewer requests. Larger shared segments stay separate so they can be reused across routes.
+
+### Better caching for static assets
+
+Immutable static assets can now be reused across deployments.
+
+### Custom error boundaries
+
+A new `catchError` function lets you define error boundaries that don't interfere with `notFound` or `redirect`. The boundary gets a `retry()` function that refetches its children, including Server Components.
+
+### Built-in glob imports
+
+Turbopack supports the Vite-compatible `import.meta.glob` API for loading multiple files at once, with hot-module reloading for Server Components that read local files.
+
+### Root params
+
+Root-level params such as `[lang]` can be read from any Server Component without passing props down. This is handy for internationalization, and it also works inside `use cache` scopes.
+
+## Instant Navigations
+
+An opt-in suite of tools that brings the responsiveness of client-driven single-page apps to Next.js, without giving up its server-driven model. It is enabled with two flags: `cacheComponents` and `partialPrefetching`.
+
+### Instant Insights
+
+A new devtool that surfaces any navigation that is not instant. Each insight includes a prompt that teaches your agent how to apply the fix.
+
+### Partial Prefetching
+
+Next.js can extract reusable loading shells from any route, and each link can prefetch as much or as little of the target page as you like.
+
+### Better Incremental Static Regeneration (ISR)
+
+A page that wasn't prerendered at build time serves an instant loading shell on its first visit, then upgrades to the fully prerendered page in the background. Every later visitor gets the final content from the cache.
+
+### Navigation Inspector
+
+A new devtool that pauses page loads and client-side navigations at the shell, so you can see exactly what loading state a user would see.
+
+### Playwright test helper
+
+A new `instant()` helper lets you write Playwright tests that assert which content is visible instantly during a navigation, so a refactor can't quietly make it slow.
+
+## Experimental features
+
+These ship behind configuration flags and are still evolving.
+
+### Rust-based React Compiler
+
+An experimental Rust port of the React Compiler runs directly inside Turbopack instead of through Babel. On large apps like v0, it cut the time from starting the dev server to a ready page by 34% on a cold build and 46% on a warm one.
+
+### Network resilience
+
+With the `useOffline` option on, a navigation, data fetch or Server Action stays pending when the network drops and retries when the connection returns. A new `useOffline` hook tells you when the app is offline so you can show a message.
+
+## Upgrade
+
+Install the latest version of `next` from npm, then read the full announcement at [nextjs.org/blog/next-16-3](https://nextjs.org/blog/next-16-3).
