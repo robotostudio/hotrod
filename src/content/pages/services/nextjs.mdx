@@ -1,0 +1,94 @@
+---
+title: "Next.js websites"
+description: "Everything that's new in Next.js 16.3: instant navigations, a faster dev server, faster builds and better tooling for AI agents."
+publishedAt: 2026-10-29
+blocks:
+  - type: hero
+    title: "==NEXT.JS== 16.3"
+    text: "Next.js 16.3 introduces Instant Navigations, a suite of tools for single-page-app responsiveness, plus a faster dev server, faster builds, and improved tooling for AI agents."
+    buttons:
+      - label: "Get in touch"
+        href: "/contact"
+        variant: filled
+        icon: phone
+  - type: figures
+    items:
+      - value: "90%"
+        label: "Less dev memory, up to"
+      - value: "5.5x"
+        label: "Faster builds on CI for some projects"
+      - value: "22%"
+        label: "More requests handled under load, up to"
+      - value: "10x"
+        label: "Faster type checking with TypeScript 7"
+  - type: feature-strip
+    title: "IMPROVEMENTS FOR EVERY APP"
+    items:
+      - icon: gauge
+        title: "LESS MEMORY IN DEV"
+        description: "Long dev sessions now use up to 90% less RAM"
+      - icon: zap
+        title: "FASTER BUILDS"
+        description: "Repeat builds can read unchanged artifacts from cache"
+      - icon: shield
+        title: "FASTER TYPE CHECKING"
+        description: "next build can use TypeScript 7 for type checking"
+      - icon: clock
+        title: "FASTER SERVER RENDERING"
+        description: "Next.js now handles up to 22% more requests under load"
+      - icon: users
+        title: "VERSIONED DOCS FOR AI AGENTS"
+        description: "Coding agents read version-matched docs with no setup"
+      - icon: star
+        title: "BETTER STATIC ASSET CACHING"
+        description: "Immutable assets can optionally be reused across deploys"
+  - type: card-grid
+    title: "MORE FOR DEVELOPERS"
+    items:
+      - icon: map-pin
+        title: "FEWER PREFETCH REQUESTS"
+        description: "Links trigger fewer requests by bundling smaller payloads."
+      - icon: shield
+        title: "CUSTOM ERROR BOUNDARIES"
+        description: "Recover from server errors by re-fetching failed data."
+      - icon: car
+        title: "BUILT-IN GLOB IMPORTS"
+        description: "Import multiple files with a new Turbopack API."
+      - icon: star
+        title: "ROOT PARAMS"
+        description: "Easily access root-level params like [lang] from any Server Component."
+  - type: feature-strip
+    title: "INSTANT NAVIGATIONS"
+    items:
+      - icon: zap
+        title: "INSTANT INSIGHTS"
+        description: "A new devtool that automatically surfaces slow navigations"
+      - icon: clock
+        title: "PARTIAL PREFETCHING"
+        description: "Fine-grained control over how much content a link should prefetch"
+      - icon: star
+        title: "BETTER ISR"
+        description: "URLs omitted from build-time prerendering can now serve an instant loading shell to the first visitor"
+      - icon: map-pin
+        title: "NAVIGATION INSPECTOR"
+        description: "A new devtool that lets you visually inspect a navigation's loading shell"
+      - icon: shield
+        title: "PLAYWRIGHT TEST HELPER"
+        description: "Write regression tests that prevent refactors from making a navigation slow"
+  - type: card-grid
+    title: "EXPERIMENTAL, TRY THEM TODAY"
+    items:
+      - icon: zap
+        title: "RUST-BASED REACT COMPILER"
+        description: "Runs directly inside Turbopack. In tests against large apps like v0, it cut the time from next dev to a ready page by 34% on a cold build and 46% on a warm one."
+      - icon: users
+        title: "NETWORK RESILIENCE"
+        description: "When the network drops, Next.js keeps navigations, data fetches and Server Actions pending and retries once the connection returns."
+  - type: cta-banner
+    title: "WANT A NEXT.JS WEBSITE?"
+    text: "Talk to the team about building on Next.js 16.3."
+    buttons:
+      - label: "Contact us"
+        href: "/contact"
+        variant: filled
+---
