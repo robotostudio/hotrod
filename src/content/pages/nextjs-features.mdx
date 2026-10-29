@@ -1,0 +1,89 @@
+---
+title: "Next.js 16.3 features"
+description: "A tour of what is new in Next.js 16.3: faster dev and builds, Instant Navigations, better tooling for AI agents, and experimental features you can try today."
+publishedAt: 2026-10-29
+---
+
+Next.js 16.3 introduces Instant Navigations, a suite of tools for single-page-app responsiveness, plus a faster dev server, faster builds, and improved tooling for AI agents. It is the biggest update to the framework since Next.js 16.0 came out last November.
+
+Source: the [Next.js 16.3 announcement](https://nextjs.org/blog/next-16-3).
+
+## Improvements for today's apps
+
+These improvements come to existing projects with zero changes to application code.
+
+### Less memory usage in dev
+
+Turbopack uses up to 90% less memory when running the dev server. The reduction comes from disk caching for dev and memory eviction, both now enabled by default. After compiling 50 routes, the vercel.com dashboard went from 21.5 GB to 2 GB, and nextjs.org went from 4,600 MB to 840 MB.
+
+### Faster builds
+
+Disk caching now works with production builds and is enabled by default. Some projects see 5.5x faster builds on CI. On nextjs.org, Turbopack compile time dropped from 21s to 9.2s when cached.
+
+### Faster type checking with TypeScript 7
+
+TypeScript 7 is a 10x faster native port of TypeScript. Next.js builds can use it for much faster type checking.
+
+### Faster server-side rendering
+
+Next.js replaced web streams with native Node.js streams in the App Router rendering layer. In benchmarks, apps handle up to 22% more requests under load.
+
+### Versioned docs for AI agents
+
+AI coding agents now automatically read documentation that matches your project's version of Next.js, with no setup.
+
+### Fewer prefetch requests
+
+Prefetches below a certain payload size are automatically bundled together, which reduces the overall number of prefetch requests. Larger shared segments stay separate so they can be reused across routes.
+
+### Better caching for static assets
+
+Immutable static assets can now be reused across deployments.
+
+### Custom error boundaries
+
+A new `catchError` function lets you define a custom error boundary that doesn't interfere with not-found pages or redirects. The boundary can also retry, re-fetching its children, including Server Components that failed to render.
+
+### Built-in glob imports
+
+Turbopack now supports loading multiple files at once with the Vite-compatible `import.meta.glob` API, bringing hot-module reloading to Server Components that read local files.
+
+### Root params
+
+Root-level params like a language segment can now be read from any Server Component without passing them down as props. This is especially handy for internationalization. They also work inside `use cache` scopes.
+
+## Instant Navigations
+
+Instant Navigations is an opt-in suite of tools that brings the responsiveness of client-driven single-page apps to Next.js, without giving up the benefits of its server-driven model. The behaviors behind it will become the default in a future major version.
+
+### Instant Insights
+
+A new devtool that automatically surfaces slow navigations. Each insight also provides a prompt that teaches your agent how to apply a fix.
+
+### Partial Prefetching
+
+Fine-grained control over how much content a link should prefetch. Next.js can extract reusable loading shells from any route, and each link can include as much or as little of the target page as you like.
+
+### Better Incremental Static Regeneration
+
+A page you don't prerender at build time now serves an instant loading shell on its first visit, then upgrades to the fully prerendered page in the background. Every later visitor gets the final content from the cache.
+
+### Navigation Inspector
+
+A new devtool that lets you pause page loads and navigations at the shell, so you can see exactly what loading state a user would see.
+
+### Playwright test helper
+
+A new `instant()` test helper lets you write tests that assert exactly what content should be instantly visible during a navigation, so a refactor can't quietly make a page slow.
+
+## Experimental features
+
+These ship behind configuration flags and are still evolving.
+
+### Rust-based React Compiler
+
+An experimental Rust port of the React Compiler runs directly inside Turbopack. In tests against large apps like v0, it cut the time from starting the dev server to a ready page by 34% on a cold build and 46% on a warm one.
+
+### Network resilience
+
+With an experimental flag enabled, a navigation, data fetch, or Server Action stays pending when the network drops and retries once the connection returns. A new `useOffline` hook reports when the app is offline so you can tell the user what's happening.
