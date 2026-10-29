@@ -1,0 +1,25 @@
+---
+type Props = {
+  type: 'faq';
+  groups: { title: string; items: { question: string; answer: string }[] }[];
+};
+
+const { groups } = Astro.props;
+---
+<section class="bg-background text-foreground py-20 px-6">
+  <div class="mx-auto max-w-4xl space-y-16">
+    {groups.map((group) => (
+      <div>
+        <h2 class="text-4xl md:text-5xl font-black mb-8">{group.title}</h2>
+        <div class="space-y-4">
+          {group.items.map((item) => (
+            <details class="border-4 border-foreground p-6">
+              <summary class="cursor-pointer text-xl font-black">{item.question}</summary>
+              <p class="mt-4 text-lg font-medium">{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
