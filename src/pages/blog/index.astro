@@ -40,9 +40,9 @@ function category(tags: readonly string[]): string | null {
 >
   <section class="bg-background text-foreground py-20 px-6">
     <div class="mx-auto max-w-7xl text-center">
-      <h1 class="text-6xl md:text-7xl font-black mb-4 tracking-tight">BLOG</h1>
+      <h1 class="text-5xl md:text-6xl font-black mb-4 tracking-tight">FROM THE GARAGE</h1>
       <p class="text-xl md:text-2xl font-semibold max-w-2xl mx-auto">
-        Writing from the Hotrod team.
+        Notes, launches and lessons from the Hotrod team.
       </p>
     </div>
   </section>
@@ -124,6 +124,10 @@ function category(tags: readonly string[]): string | null {
               </h3>
               <p class="font-medium opacity-90 mb-4">{post.data.description}</p>
               <div class="flex flex-wrap items-center gap-4 text-xs font-bold opacity-80 mb-4">
+                <span class="flex items-center gap-1">
+                  <Lucide name="user" class="w-3 h-3" />
+                  {authorName(post.data.author.id)}
+                </span>
                 <span class="flex items-center gap-1">
                   <Lucide name="calendar" class="w-3 h-3" />
                   {formatDate(post.data.publishedAt)}
