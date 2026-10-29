@@ -1,0 +1,98 @@
+---
+title: "Next.js websites"
+description: "Everything in a modern Next.js website, based on the Next.js 16.3 release: faster dev and builds, Instant Navigations, better caching, AI-agent docs and more."
+publishedAt: 2026-10-29
+blocks:
+  - type: hero
+    title: "==NEXT.JS== WEBSITES."
+    text: "Next.js 16.3 is the biggest update to the framework since 16.0. It brings SPA-like instant navigations, a much lighter dev server, faster builds and better tooling for AI coding agents."
+    buttons:
+      - label: "Get in touch"
+        href: "/contact"
+        variant: filled
+        icon: zap
+      - label: "Read the release post"
+        href: "https://nextjs.org/blog/next-16-3"
+        variant: outlined
+        icon: map-pin
+  - type: figures
+    items:
+      - value: "90%"
+        label: "Less dev memory, up to"
+      - value: "5.5x"
+        label: "Faster CI builds on some projects"
+      - value: "22%"
+        label: "More requests under load, up to"
+      - value: "46%"
+        label: "Faster dev start with the Rust React Compiler (warm, on v0)"
+  - type: card-grid
+    title: "IMPROVEMENTS FOR EVERY APP"
+    items:
+      - icon: zap
+        title: "LESS MEMORY IN DEV"
+        description: "Turbopack uses up to 90% less memory when running the dev server, thanks to disk caching and memory eviction, both on by default."
+      - icon: clock
+        title: "FASTER BUILDS"
+        description: "Disk caching now works for production builds too. Repeat builds read unchanged work from cache, with some projects seeing 5.5x faster builds on CI."
+      - icon: car
+        title: "FASTER RENDERING"
+        description: "Native Node.js streams replace web streams in server-side rendering, so apps handle up to 22% more requests under load with no code changes."
+      - icon: shield
+        title: "FASTER TYPE CHECKING"
+        description: "Builds can use TypeScript 7, a 10x faster native port of TypeScript, for much quicker type checking."
+  - type: feature-strip
+    title: "MORE UNDER THE HOOD"
+    items:
+      - icon: users
+        title: "VERSIONED DOCS FOR AI AGENTS"
+        description: "Coding agents automatically read docs that match your project's Next.js version"
+      - icon: zap
+        title: "FEWER PREFETCH REQUESTS"
+        description: "Small prefetches are bundled together to cut the number of requests"
+      - icon: clock
+        title: "BETTER STATIC ASSET CACHING"
+        description: "Immutable static assets can be reused across deployments"
+      - icon: shield
+        title: "CUSTOM ERROR BOUNDARIES"
+        description: "Recover from server errors by retrying failed data, without breaking not-found or redirects"
+      - icon: star
+        title: "BUILT-IN GLOB IMPORTS"
+        description: "Import multiple files at once with a new Turbopack API"
+      - icon: map-pin
+        title: "ROOT PARAMS"
+        description: "Read root-level params like the language from any Server Component, no prop drilling"
+  - type: card-grid
+    title: "INSTANT NAVIGATIONS"
+    items:
+      - icon: zap
+        title: "INSTANT INSIGHTS"
+        description: "A new devtool that automatically surfaces slow navigations, so you don't miss a slow page."
+      - icon: car
+        title: "PARTIAL PREFETCHING"
+        description: "Fine-grained control over how much of the target page a link should prefetch, from a little to a lot."
+      - icon: clock
+        title: "BETTER ISR"
+        description: "Pages that weren't prerendered at build time serve an instant loading shell to the first visitor, then upgrade to the full page in the background."
+      - icon: shield
+        title: "NAVIGATION INSPECTOR AND TESTING"
+        description: "Visually inspect a navigation's loading shell, and use a Playwright test helper to catch navigations that quietly become slow."
+  - type: feature-strip
+    title: "EXPERIMENTAL, TRY IT TODAY"
+    items:
+      - icon: zap
+        title: "RUST REACT COMPILER"
+        description: "Runs inside Turbopack. On v0, time from dev start to a ready page dropped 34% cold and 46% warm"
+      - icon: shield
+        title: "NETWORK RESILIENCE"
+        description: "Navigations, data fetches and Server Actions wait and retry when the connection returns"
+      - icon: users
+        title: "OFFLINE HOOK"
+        description: "A new hook reports when the app is offline so you can tell the user what's happening"
+  - type: cta-banner
+    title: "WANT A NEXT.JS WEBSITE?"
+    text: "Talk to the team about your project."
+    buttons:
+      - label: "Contact us"
+        href: "/contact"
+        variant: filled
+---
