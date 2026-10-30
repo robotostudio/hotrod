@@ -1,0 +1,39 @@
+---
+type Props = {
+  type: 'pricing-table';
+  title: string;
+  columns: string[];
+  rows: string[][];
+};
+
+const { title, columns, rows } = Astro.props;
+---
+<section class="bg-background text-foreground pb-20 px-6">
+  <div class="mx-auto max-w-5xl">
+    <h3 class="text-3xl md:text-4xl font-black text-center mb-8">{title}</h3>
+    <div class="overflow-x-auto border-4 border-foreground">
+      <table class="w-full text-left">
+        <thead class="bg-foreground text-background">
+          <tr>
+            {columns.map((column) => (
+              <th scope="col" class="px-6 py-4 text-lg font-black">{column}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, index) => (
+            <tr class:list={['border-t-4 border-foreground', index % 2 === 1 ? 'bg-secondary' : '']}>
+              {row.map((cell, cellIndex) =>
+                cellIndex === 0 ? (
+                  <th scope="row" class="px-6 py-4 font-black">{cell}</th>
+                ) : (
+                  <td class="px-6 py-4 font-semibold">{cell}</td>
+                ),
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

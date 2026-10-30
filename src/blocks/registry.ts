@@ -8,6 +8,8 @@ import { featureStripSchema } from './feature-strip/schema';
 import FeatureStripComponent from './feature-strip/index.astro';
 import { pricingSchema } from './pricing/schema';
 import PricingComponent from './pricing/index.astro';
+import { pricingTableSchema } from './pricing-table/schema';
+import PricingTableComponent from './pricing-table/index.astro';
 import { ctaBannerSchema } from './cta-banner/schema';
 import CtaBannerComponent from './cta-banner/index.astro';
 import { imageFeatureSchema } from './image-feature/schema';
@@ -21,6 +23,7 @@ export const blockSchemas = {
   'card-grid': cardGridSchema,
   'feature-strip': featureStripSchema,
   pricing: pricingSchema,
+  'pricing-table': pricingTableSchema,
   'cta-banner': ctaBannerSchema,
   'image-feature': imageFeatureSchema,
   'video-feature': videoFeatureSchema,
@@ -32,6 +35,7 @@ export const blockComponents = {
   'card-grid': CardGridComponent,
   'feature-strip': FeatureStripComponent,
   pricing: PricingComponent,
+  'pricing-table': PricingTableComponent,
   'cta-banner': CtaBannerComponent,
   'image-feature': ImageFeatureComponent,
   'video-feature': VideoFeatureComponent,
