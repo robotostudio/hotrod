@@ -4,8 +4,22 @@ description: "The Astro starter Roboto Studio wished existed when clients kept a
 publishedAt: 2026-05-12
 ---
 
+import CardGrid from '../../blocks/card-grid/index.astro';
+
 Hotrod is an opinionated Astro starter with three content collections —
 pages, blog, and authors — wired up with strict frontmatter validation
 and built for agent-driven editing.
 
 Replace this page with your own about copy whenever you want.
+
+<div class="not-prose -mx-6">
+  <CardGrid
+    type="card-grid"
+    title="Add your section title"
+    items={[
+      { icon: 'shield', title: 'Add your first feature', description: 'Add a short line about your first feature.' },
+      { icon: 'zap', title: 'Add your second feature', description: 'Add a short line about your second feature.' },
+      { icon: 'users', title: 'Add your third feature', description: 'Add a short line about your third feature.' },
+    ]}
+  />
+</div>
