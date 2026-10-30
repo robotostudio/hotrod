@@ -1,0 +1,86 @@
+---
+import BlobImage from './blob-image.astro';
+import Lucide from './lucide.astro';
+
+interface Props {
+  images: { key: string; alt: string }[];
+  label?: string;
+}
+
+const { images, label = 'Image carousel' } = Astro.props;
+const hasMany = images.length > 1;
+---
+<div class="not-prose my-12" data-carousel role="region" aria-roledescription="carousel" aria-label={label}>
+  <div class="relative border-4 border-foreground overflow-hidden">
+    <div
+      class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      data-carousel-track
+    >
+      {images.map((image, index) => (
+        <div
+          class="relative w-full shrink-0 snap-center aspect-[3/2]"
+          role="group"
+          aria-roledescription="slide"
+          aria-label={`${index + 1} of ${images.length}`}
+          data-carousel-slide
+        >
+          <BlobImage image={image} priority={index === 0} class="w-full h-full object-cover" sizes="(min-width: 768px) 48rem, 100vw" />
+        </div>
+      ))}
+    </div>
+    {hasMany && (
+      <>
+        <button
+          type="button"
+          class="absolute left-3 top-1/2 -translate-y-1/2 bg-background text-foreground border-4 border-foreground p-2 hover:bg-foreground hover:text-background transition-colors"
+          aria-label="Previous image"
+          data-carousel-prev
+        >
+          <Lucide name="chevron-left" class="w-6 h-6" />
+        </button>
+        <button
+          type="button"
+          class="absolute right-3 top-1/2 -translate-y-1/2 bg-background text-foreground border-4 border-foreground p-2 hover:bg-foreground hover:text-background transition-colors"
+          aria-label="Next image"
+          data-carousel-next
+        >
+          <Lucide name="chevron-right" class="w-6 h-6" />
+        </button>
+      </>
+    )}
+  </div>
+  {hasMany && (
+    <div class="flex justify-center gap-2 mt-4">
+      {images.map((_, index) => (
+        <button
+          type="button"
+          class="w-3 h-3 border-2 border-foreground bg-background aria-[current=true]:bg-foreground"
+          aria-label={`Show image ${index + 1}`}
+          aria-current={index === 0 ? 'true' : 'false'}
+          data-carousel-dot={index}
+        />
+      ))}
+    </div>
+  )}
+</div>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-carousel]')) {
+    const track = root.querySelector<HTMLElement>('[data-carousel-track]');
+    if (!track) continue;
+    const slides = track.querySelectorAll<HTMLElement>('[data-carousel-slide]');
+    const dots = root.querySelectorAll<HTMLElement>('[data-carousel-dot]');
+    const current = () => Math.round(track.scrollLeft / track.clientWidth);
+    const goTo = (index: number) => {
+      const next = (index + slides.length) % slides.length;
+      track.scrollTo({ left: next * track.clientWidth });
+    };
+    root.querySelector('[data-carousel-prev]')?.addEventListener('click', () => goTo(current() - 1));
+    root.querySelector('[data-carousel-next]')?.addEventListener('click', () => goTo(current() + 1));
+    dots.forEach((dot, index) => dot.addEventListener('click', () => goTo(index)));
+    track.addEventListener('scroll', () => {
+      const active = current();
+      dots.forEach((dot, index) => dot.setAttribute('aria-current', String(index === active)));
+    }, { passive: true });
+  }
+</script>

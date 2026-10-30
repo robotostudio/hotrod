@@ -4,8 +4,17 @@ description: "The Astro starter Roboto Studio wished existed when clients kept a
 publishedAt: 2026-05-12
 ---
 
+import ImageCarousel from '../../components/image-carousel.astro';
+
 Hotrod is an opinionated Astro starter with three content collections —
 pages, blog, and authors — wired up with strict frontmatter validation
 and built for agent-driven editing.
 
 Replace this page with your own about copy whenever you want.
+
+<ImageCarousel
+  label="About Hotrod"
+  images={[
+    { key: "taxi.jpeg", alt: "A driver with one hand on the steering wheel, city lights blurred beyond the windscreen" },
+  ]}
+/>
