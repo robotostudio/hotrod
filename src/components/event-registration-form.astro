@@ -1,0 +1,69 @@
+---
+interface Props {
+  eventId: string;
+  eventTitle: string;
+  heading?: string;
+  text?: string;
+  submitLabel?: string;
+}
+
+const {
+  eventId,
+  eventTitle,
+  heading = 'Save your seat',
+  text = 'Registration is free. We will email your confirmation and venue details a week before the event.',
+  submitLabel = 'Register',
+} = Astro.props;
+
+const fieldClass =
+  'w-full px-5 py-4 bg-background text-foreground font-bold placeholder:text-foreground/60 border-4 border-background focus:outline-none focus:border-white';
+const labelClass = 'block text-sm font-black mb-2';
+---
+
+<section class="bg-foreground text-background py-20 px-6" aria-labelledby="register-heading">
+  <div class="mx-auto max-w-3xl">
+    <h2 id="register-heading" class="text-4xl md:text-5xl font-black mb-4 tracking-tight">
+      {heading.toUpperCase()}
+    </h2>
+    <p class="text-lg font-semibold mb-10 opacity-90">{text}</p>
+    <form method="post" action="#" class="grid gap-6 sm:grid-cols-2">
+      <input type="hidden" name="event" value={eventId} />
+      <div>
+        <label for="register-name" class={labelClass}>FULL NAME</label>
+        <input id="register-name" name="name" type="text" autocomplete="name" required placeholder="Jane Driver" class={fieldClass} />
+      </div>
+      <div>
+        <label for="register-email" class={labelClass}>EMAIL</label>
+        <input id="register-email" name="email" type="email" autocomplete="email" required placeholder="jane@example.com" class={fieldClass} />
+      </div>
+      <div>
+        <label for="register-role" class={labelClass}>I AM A</label>
+        <select id="register-role" name="role" required class={fieldClass}>
+          <option value="driver">Driver</option>
+          <option value="medallion-owner">Medallion owner</option>
+          <option value="fleet-operator">Fleet operator</option>
+          <option value="city-official">City official</option>
+          <option value="rider">Rider</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div>
+        <label for="register-guests" class={labelClass}>NUMBER OF GUESTS</label>
+        <input id="register-guests" name="guests" type="number" min="1" max="10" value="1" required class={fieldClass} />
+      </div>
+      <div class="sm:col-span-2">
+        <label for="register-notes" class={labelClass}>ANYTHING WE SHOULD KNOW? (OPTIONAL)</label>
+        <textarea id="register-notes" name="notes" rows="4" placeholder="Accessibility needs, questions for the speakers..." class={fieldClass}></textarea>
+      </div>
+      <div class="sm:col-span-2">
+        <button
+          type="submit"
+          class="w-full sm:w-auto bg-background text-foreground hover:bg-background/90 font-black text-lg px-10 py-4"
+        >
+          {submitLabel.toUpperCase()}
+          <span class="sr-only"> for {eventTitle}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

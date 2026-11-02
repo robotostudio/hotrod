@@ -1,6 +1,7 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
 import {
   getPublishedAuthors,
+  getPublishedEvents,
   getPublishedPages,
   getPublishedPosts,
 } from '../../lib/content';
@@ -12,10 +13,11 @@ type OgRouteProps = {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const [pages, posts, authors] = await Promise.all([
+  const [pages, posts, authors, events] = await Promise.all([
     getPublishedPages(),
     getPublishedPosts(),
     getPublishedAuthors(),
+    getPublishedEvents(),
   ]);
 
   const entries: Array<{ params: { path: string }; props: OgRouteProps }> = [];
@@ -41,6 +43,18 @@ export const getStaticPaths: GetStaticPaths = async () => {
     entries.push({
       params: { path: `blog/${post.id}` },
       props: { title: post.data.title, variant: 'page' },
+    });
+  }
+
+  entries.push({
+    params: { path: 'events' },
+    props: { title: 'Events', variant: 'page' },
+  });
+
+  for (const event of events) {
+    entries.push({
+      params: { path: `events/${event.id}` },
+      props: { title: event.data.title, variant: 'page' },
     });
   }
 

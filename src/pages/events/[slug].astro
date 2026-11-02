@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../../layouts/base-layout.astro';
+import CheckerboardDivider from '../../components/checkerboard-divider.astro';
+import EventRegistrationForm from '../../components/event-registration-form.astro';
+import Lucide from '../../components/lucide.astro';
+import { getPublishedEvents } from '../../lib/content';
+import { formatEventDay, formatEventTime } from '../../lib/format-event-date';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const events = await getPublishedEvents();
+  return events.map((event) => ({ params: { slug: event.id }, props: { event } }));
+}
+
+const { event } = Astro.props;
+const { Content } = await render(event);
+const { title, description, metaDescription, startDate, endDate, location, form, publishedAt, updatedAt } =
+  event.data;
+const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  `${location.venue}, ${location.address}`,
+)}`;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  metaDescription={metaDescription}
+  publishedAt={publishedAt}
+  updatedAt={updatedAt}
+>
+  <section class="bg-background text-foreground pt-12 pb-6 px-6">
+    <div class="mx-auto max-w-4xl">
+      <a href="/events" class="inline-flex items-center gap-2 font-bold hover:underline underline-offset-4">
+        <Lucide name="arrow-left" class="w-5 h-5" />
+        BACK TO ALL EVENTS
+      </a>
+    </div>
+  </section>
+
+  <section class="bg-background text-foreground pb-16 px-6">
+    <div class="mx-auto max-w-4xl">
+      <span class="inline-block bg-foreground text-background px-4 py-2 font-black text-sm mb-6">
+        {location.borough.toUpperCase()}
+      </span>
+      <h1 class="text-5xl md:text-6xl font-black mb-6 tracking-tight text-balance">
+        {title.toUpperCase()}
+      </h1>
+      <p class="text-xl md:text-2xl font-semibold mb-10 opacity-90">{description}</p>
+
+      <dl class="grid gap-4 sm:grid-cols-3">
+        <div class="border-4 border-foreground p-5">
+          <dt class="flex items-center gap-2 text-sm font-black mb-2">
+            <Lucide name="calendar" class="w-4 h-4" /> DATE
+          </dt>
+          <dd class="font-bold">{formatEventDay(startDate, endDate)}</dd>
+        </div>
+        <div class="border-4 border-foreground p-5">
+          <dt class="flex items-center gap-2 text-sm font-black mb-2">
+            <Lucide name="clock" class="w-4 h-4" /> TIME
+          </dt>
+          <dd class="font-bold">{formatEventTime(startDate, endDate)}</dd>
+        </div>
+        <div class="border-4 border-foreground p-5">
+          <dt class="flex items-center gap-2 text-sm font-black mb-2">
+            <Lucide name="map-pin" class="w-4 h-4" /> LOCATION
+          </dt>
+          <dd class="font-bold">
+            {location.venue}
+            <a
+              href={mapHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block font-medium text-sm mt-1 underline underline-offset-4"
+            >
+              {location.address}
+            </a>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <CheckerboardDivider />
+
+  <section class="bg-background text-foreground py-20 px-6">
+    <div class="mx-auto max-w-4xl">
+      <article class="prose prose-lg max-w-none">
+        <Content />
+      </article>
+    </div>
+  </section>
+
+  <CheckerboardDivider />
+
+  <EventRegistrationForm
+    eventId={event.id}
+    eventTitle={title}
+    heading={form?.heading}
+    text={form?.text}
+    submitLabel={form?.submitLabel}
+  />
+
+  <CheckerboardDivider />
+</BaseLayout>

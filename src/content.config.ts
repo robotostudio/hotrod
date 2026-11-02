@@ -82,4 +82,38 @@ const authors = defineCollection({
     .strict(),
 });
 
-export const collections = { pages, blog, authors };
+const events = defineCollection({
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/events' }),
+  schema: z
+    .object({
+      title: requiredString('title'),
+      description: seoDescription('description'),
+      metaDescription: metaDescriptionOverride,
+      startDate: z.coerce.date({ message: dateMessage('startDate') }),
+      endDate: z.coerce.date({ message: dateMessage('endDate') }).optional(),
+      location: z
+        .object({
+          venue: requiredString('location.venue'),
+          address: requiredString('location.address'),
+          borough: z.enum(['Manhattan', 'Brooklyn', 'Queens', 'The Bronx', 'Staten Island'], {
+            message:
+              '`location.borough` must be one of Manhattan, Brooklyn, Queens, The Bronx, Staten Island.',
+          }),
+        })
+        .strict(),
+      form: z
+        .object({
+          heading: z.string().optional(),
+          text: z.string().optional(),
+          submitLabel: z.string().optional(),
+        })
+        .strict()
+        .optional(),
+      publishedAt: z.coerce.date({ message: dateMessage('publishedAt') }),
+      updatedAt: z.coerce.date({ message: dateMessage('updatedAt') }).optional(),
+      draft: z.boolean().default(false),
+    })
+    .strict(),
+});
+
+export const collections = { pages, blog, authors, events };

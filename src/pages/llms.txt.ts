@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getPublishedPages, getPublishedPosts } from '../lib/content';
+import { getPublishedEvents, getPublishedPages, getPublishedPosts } from '../lib/content';
 
 const SITE_NAME = 'Hotrod';
 const SITE_SUMMARY =
@@ -15,6 +15,7 @@ function pagePath(id: string): string {
 export const GET: APIRoute = async () => {
   const pages = await getPublishedPages();
   const posts = await getPublishedPosts();
+  const events = await getPublishedEvents();
 
   const lines: string[] = [`# ${SITE_NAME}`, '', `> ${SITE_SUMMARY}`, '', SITE_DESCRIPTION];
 
@@ -29,6 +30,13 @@ export const GET: APIRoute = async () => {
     lines.push('', '## Blog', '');
     for (const post of posts) {
       lines.push(`- [${post.data.title}](/blog/${post.id}.md): ${post.data.description}`);
+    }
+  }
+
+  if (events.length > 0) {
+    lines.push('', '## Events', '');
+    for (const event of events) {
+      lines.push(`- [${event.data.title}](/events/${event.id}): ${event.data.description}`);
     }
   }
 
