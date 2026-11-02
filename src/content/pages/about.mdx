@@ -4,8 +4,23 @@ description: "The Astro starter Roboto Studio wished existed when clients kept a
 publishedAt: 2026-05-12
 ---
 
+import ImageCarousel from '../../components/image-carousel.astro';
+import taxiDomedMemorial from '../../assets/about/taxi-domed-memorial.jpg';
+import taxiClockTower from '../../assets/about/taxi-clock-tower.jpg';
+import taxisCityStreet from '../../assets/about/taxis-city-street.jpg';
+
 Hotrod is an opinionated Astro starter with three content collections —
 pages, blog, and authors — wired up with strict frontmatter validation
 and built for agent-driven editing.
 
 Replace this page with your own about copy whenever you want.
+
+<ImageCarousel
+  label="About Hotrod"
+  images={[
+    { key: "taxi.jpeg", alt: "A driver with one hand on the steering wheel, city lights blurred beyond the windscreen" },
+    { src: taxiDomedMemorial, alt: "A yellow taxi parked in front of a white marble building with a large dome" },
+    { src: taxiClockTower, alt: "A yellow taxi on a street in front of an old building with a clock tower" },
+    { src: taxisCityStreet, alt: "A row of yellow taxis waiting at a crossing on a busy city street" },
+  ]}
+/>
