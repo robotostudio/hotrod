@@ -82,4 +82,19 @@ const authors = defineCollection({
     .strict(),
 });
 
-export const collections = { pages, blog, authors };
+const events = defineCollection({
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/events' }),
+  schema: z
+    .object({
+      title: requiredString('title'),
+      description: seoDescription('description'),
+      metaDescription: metaDescriptionOverride,
+      location: requiredString('location'),
+      publishedAt: z.coerce.date({ message: dateMessage('publishedAt') }),
+      updatedAt: z.coerce.date({ message: dateMessage('updatedAt') }).optional(),
+      draft: z.boolean().default(false),
+    })
+    .strict(),
+});
+
+export const collections = { pages, blog, authors, events };

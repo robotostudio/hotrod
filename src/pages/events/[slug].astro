@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../../layouts/base-layout.astro';
+import CheckerboardDivider from '../../components/checkerboard-divider.astro';
+import Lucide from '../../components/lucide.astro';
+import { getPublishedEvents } from '../../lib/content';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const events = await getPublishedEvents();
+  return events.map((event) => ({
+    params: { slug: event.id },
+    props: { event },
+  }));
+}
+
+const { event } = Astro.props;
+const { Content } = await render(event);
+const { title, description, metaDescription, location, publishedAt, updatedAt } = event.data;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  metaDescription={metaDescription}
+  publishedAt={publishedAt}
+  updatedAt={updatedAt}
+>
+  <section class="bg-background text-foreground pt-12 pb-6 px-6">
+    <div class="mx-auto max-w-4xl">
+      <a
+        href="/events"
+        class="inline-flex items-center gap-2 font-bold hover:underline underline-offset-4"
+      >
+        <Lucide name="arrow-left" class="w-5 h-5" />
+        BACK TO ALL EVENTS
+      </a>
+    </div>
+  </section>
+
+  <section class="bg-background text-foreground pb-16 px-6">
+    <div class="mx-auto max-w-4xl">
+      <h1 class="text-5xl md:text-6xl font-black mb-6 tracking-tight text-balance">
+        {title.toUpperCase()}
+      </h1>
+      <p class="text-xl md:text-2xl font-semibold mb-8 opacity-90">{description}</p>
+      <div class="flex flex-wrap items-center gap-6 text-sm font-bold">
+        <span class="flex items-center gap-2">
+          <Lucide name="map-pin" class="w-5 h-5" />
+          {location}
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <CheckerboardDivider />
+
+  <section class="bg-foreground text-background py-20 px-6">
+    <div class="mx-auto max-w-4xl">
+      <article class="prose prose-on-dark prose-lg max-w-none">
+        <Content />
+      </article>
+    </div>
+  </section>
+
+  <CheckerboardDivider />
+
+  <section class="bg-background text-foreground py-20 px-6">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="text-4xl md:text-5xl font-black mb-4">SAVE YOUR SPOT</h2>
+      <p class="text-lg font-semibold mb-8 opacity-90">
+        Leave your details and we'll be in touch about this event.
+      </p>
+      <form method="post" action="#" class="flex flex-col gap-4 max-w-xl mx-auto text-left">
+        <input type="hidden" name="event" value={event.id} />
+        <input
+          type="text"
+          name="name"
+          required
+          placeholder="Your name"
+          class="px-6 py-4 bg-foreground text-background font-bold placeholder:text-background/60 border-4 border-foreground focus:outline-none focus:border-white"
+        />
+        <input
+          type="email"
+          name="email"
+          required
+          placeholder="Enter your email"
+          class="px-6 py-4 bg-foreground text-background font-bold placeholder:text-background/60 border-4 border-foreground focus:outline-none focus:border-white"
+        />
+        <button
+          type="submit"
+          class="bg-foreground text-background hover:bg-foreground/90 font-bold text-lg px-8 py-4"
+        >
+          REGISTER
+        </button>
+      </form>
+    </div>
+  </section>
+</BaseLayout>

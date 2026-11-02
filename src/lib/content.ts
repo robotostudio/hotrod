@@ -1,6 +1,6 @@
 import { getCollection } from 'astro:content';
 
-const RESERVED_PAGE_SEGMENTS = ['blog', 'authors'] as const;
+const RESERVED_PAGE_SEGMENTS = ['blog', 'authors', 'events'] as const;
 
 function isPublished(data: { draft?: boolean }): boolean {
   if (import.meta.env.DEV) return true;
@@ -31,4 +31,9 @@ export async function getPublishedPosts() {
 
 export async function getPublishedAuthors() {
   return getCollection('authors');
+}
+
+export async function getPublishedEvents() {
+  const events = await getCollection('events', (entry) => isPublished(entry.data));
+  return events.sort((a, b) => a.data.title.localeCompare(b.data.title));
 }
