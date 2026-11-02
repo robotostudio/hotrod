@@ -5,6 +5,8 @@ publishedAt: 2026-05-12
 ---
 
 import ImageCarousel from '../../components/image-carousel.astro';
+import taxiDomedMemorial from '../../assets/about/taxi-domed-memorial.jpg';
+import taxiClockTower from '../../assets/about/taxi-clock-tower.jpg';
 
 Hotrod is an opinionated Astro starter with three content collections —
 pages, blog, and authors — wired up with strict frontmatter validation
@@ -16,5 +18,7 @@ Replace this page with your own about copy whenever you want.
   label="About Hotrod"
   images={[
     { key: "taxi.jpeg", alt: "A driver with one hand on the steering wheel, city lights blurred beyond the windscreen" },
+    { src: taxiDomedMemorial, alt: "A yellow taxi parked in front of a white marble building with a large dome" },
+    { src: taxiClockTower, alt: "A yellow taxi on a street in front of an old building with a clock tower" },
   ]}
 />

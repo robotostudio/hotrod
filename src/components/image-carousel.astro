@@ -1,9 +1,14 @@
 ---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
 import BlobImage from './blob-image.astro';
 import Lucide from './lucide.astro';
 
+// Each slide is either a Vercel Blob key or an image imported from src/assets.
+type Slide = { key: string; alt: string } | { src: ImageMetadata; alt: string };
+
 interface Props {
-  images: { key: string; alt: string }[];
+  images: Slide[];
   label?: string;
 }
 
@@ -18,13 +23,23 @@ const hasMany = images.length > 1;
     >
       {images.map((image, index) => (
         <div
-          class="relative w-full shrink-0 snap-center aspect-[3/2]"
+          class="relative w-full shrink-0 snap-center aspect-[3/2] bg-foreground"
           role="group"
           aria-roledescription="slide"
           aria-label={`${index + 1} of ${images.length}`}
           data-carousel-slide
         >
-          <BlobImage image={image} priority={index === 0} class="w-full h-full object-cover" sizes="(min-width: 768px) 48rem, 100vw" />
+          {'src' in image ? (
+            <Image
+              src={image.src}
+              alt={image.alt}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              class="w-full h-full object-contain"
+              sizes="(min-width: 768px) 48rem, 100vw"
+            />
+          ) : (
+            <BlobImage image={image} priority={index === 0} class="w-full h-full object-contain" sizes="(min-width: 768px) 48rem, 100vw" />
+          )}
         </div>
       ))}
     </div>
