@@ -4,9 +4,26 @@ description: "Content-first Astro builds, tuned for agent editing. Strict Zod sc
 publishedAt: 2026-05-12
 ---
 
+import Faq from '../../../blocks/faq/index.astro';
+
 We design and build content-first Astro websites that play well with the
 new generation of coding agents. Strict schemas, predictable routes, and
 zero surprise — so the agent doing the writing doesn't fight the platform.
 
 This page lives at `src/content/pages/services/astro.mdx` and is served at
 `/services/astro` automatically.
+
+<Faq type="faq" title="FAQ" items={[
+  {
+    "question": "What kind of Astro websites do you build?",
+    "answer": "Content-first Astro websites that play well with the new generation of coding agents."
+  },
+  {
+    "question": "What is in the stack?",
+    "answer": "Strict Zod schemas, MDX content, Vercel Blob media and Mux video: the full Hotrod stack."
+  },
+  {
+    "question": "Why does it suit coding agents?",
+    "answer": "Strict schemas, predictable routes and zero surprise, so the agent doing the writing doesn't fight the platform."
+  }
+]} />
