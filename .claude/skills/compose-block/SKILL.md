@@ -166,7 +166,7 @@ Pass `sizes` to `BlobImage` matching the column the image fills.
 ## 6. Verify
 
 ```sh
-pnpm astro check   # types, registry lockstep (needs .env.local, see AGENTS.md)
+pnpm astro check   # types, registry lockstep (needs env vars: `shelve pull`)
 pnpm build         # schemas, every page renders
 pnpm dev           # look at it
 ```

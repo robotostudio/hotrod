@@ -61,7 +61,7 @@ the task before starting.
 | Command | Does |
 |---|---|
 | `pnpm install` | Install dependencies |
-| `pnpm dlx vercel env pull .env.local` | Pull env vars. The Development env holds `BLOB_READ_WRITE_TOKEN` only; `MUX_TOKEN_ID` and `MUX_TOKEN_SECRET` are in Production (`--environment=production`) and must be added to `.env.local` too. `dev`, `build` and `astro check` fail without all three. |
+| `shelve pull` | Pull env vars from Shelve (project and env come from `shelve.json`). `pnpm dlx vercel env pull .env.local` works too. `dev`, `build` and `astro check` fail without `BLOB_READ_WRITE_TOKEN`, `MUX_TOKEN_ID` and `MUX_TOKEN_SECRET`. |
 | `pnpm dev` | Dev server at `http://localhost:4321`, drafts included |
 | `pnpm build` | Production build; validates every page |
 | `pnpm astro check` | Type check |

@@ -128,9 +128,9 @@ pnpm build        # runs every Zod schema; the error names the file and field
 pnpm dev          # http://localhost:4321/<slug>
 ```
 
-- Both need `.env.local` with the Blob and Mux tokens. If it is missing,
-  follow the env row under Commands in `AGENTS.md`; do not paste token
-  values into chat.
+- Both need the Blob and Mux tokens locally. If they are missing, run
+  `shelve pull` (see Commands in `AGENTS.md`); never paste token values into
+  chat.
 - Check whether a dev server is already running before starting another.
 - `pnpm build` checks a draft's frontmatter but does not render the page, so
   render errors on a draft (an unknown icon, for one) only show in
