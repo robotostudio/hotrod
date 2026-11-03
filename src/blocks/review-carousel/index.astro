@@ -1,0 +1,82 @@
+---
+import Lucide from '../../components/lucide.astro';
+
+type Props = {
+  type: 'review-carousel';
+  title: string;
+  items: { quote: string; name: string; role?: string }[];
+};
+
+const { title, items } = Astro.props;
+---
+<section class="bg-background text-foreground py-20 px-6" data-review-carousel>
+  <div class="mx-auto max-w-7xl">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16">
+      <h2 class="text-5xl md:text-6xl font-black text-center md:text-left">{title}</h2>
+      <div class="flex justify-center gap-4">
+        <button
+          type="button"
+          data-carousel-prev
+          aria-label="Previous review"
+          class="inline-flex items-center justify-center w-14 h-14 border-4 border-foreground bg-background text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-40 disabled:pointer-events-none"
+        >
+          <Lucide name="arrow-left" class="w-6 h-6" />
+        </button>
+        <button
+          type="button"
+          data-carousel-next
+          aria-label="Next review"
+          class="inline-flex items-center justify-center w-14 h-14 border-4 border-foreground bg-foreground text-background hover:bg-background hover:text-foreground transition-colors disabled:opacity-40 disabled:pointer-events-none"
+        >
+          <Lucide name="arrow-right" class="w-6 h-6" />
+        </button>
+      </div>
+    </div>
+    <ul
+      data-carousel-track
+      class="flex -mx-3 overflow-x-auto snap-x snap-mandatory motion-safe:scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      aria-label={title}
+    >
+      {items.map((item) => (
+        <li class="snap-start shrink-0 w-full md:w-1/2 lg:w-1/3 px-3">
+          <figure class="h-full flex flex-col bg-foreground text-background p-8 border-4 border-foreground">
+            <Lucide name="quote" class="w-12 h-12 mb-6" />
+            <blockquote class="flex-1 text-xl font-semibold mb-8">{item.quote}</blockquote>
+            <figcaption>
+              <p class="text-xl font-black">{item.name}</p>
+              {item.role && <p class="font-semibold opacity-80">{item.role}</p>}
+            </figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<script>
+  function initReviewCarousels() {
+    for (const root of document.querySelectorAll<HTMLElement>('[data-review-carousel]')) {
+      const track = root.querySelector<HTMLElement>('[data-carousel-track]');
+      const prev = root.querySelector<HTMLButtonElement>('[data-carousel-prev]');
+      const next = root.querySelector<HTMLButtonElement>('[data-carousel-next]');
+      if (!track || !prev || !next) continue;
+
+      const step = () => {
+        const first = track.querySelector<HTMLElement>('li');
+        return first ? first.offsetWidth : track.clientWidth;
+      };
+      const update = () => {
+        prev.disabled = track.scrollLeft <= 1;
+        next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+      };
+
+      prev.addEventListener('click', () => track.scrollBy({ left: -step() }));
+      next.addEventListener('click', () => track.scrollBy({ left: step() }));
+      track.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    }
+  }
+
+  if (typeof document !== 'undefined') initReviewCarousels();
+</script>

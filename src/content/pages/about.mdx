@@ -4,8 +4,25 @@ description: "The Astro starter Roboto Studio wished existed when clients kept a
 publishedAt: 2026-05-12
 ---
 
+import Faq from '../../blocks/faq/index.astro';
+
 Hotrod is an opinionated Astro starter with three content collections —
 pages, blog, and authors — wired up with strict frontmatter validation
 and built for agent-driven editing.
 
 Replace this page with your own about copy whenever you want.
+
+<Faq type="faq" title="FAQ" items={[
+  {
+    "question": "Who builds Hotrod?",
+    "answer": "Hotrod is built by Roboto Studio."
+  },
+  {
+    "question": "What content does Hotrod have?",
+    "answer": "Three content collections, pages, blog and authors, wired up with strict frontmatter validation."
+  },
+  {
+    "question": "How is it licensed?",
+    "answer": "Hotrod is MIT licensed, so you can use it anywhere."
+  }
+]} />

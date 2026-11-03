@@ -14,6 +14,10 @@ import { imageFeatureSchema } from './image-feature/schema';
 import ImageFeatureComponent from './image-feature/index.astro';
 import { videoFeatureSchema } from './video-feature/schema';
 import VideoFeatureComponent from './video-feature/index.astro';
+import { reviewCarouselSchema } from './review-carousel/schema';
+import ReviewCarouselComponent from './review-carousel/index.astro';
+import { faqSchema } from './faq/schema';
+import FaqComponent from './faq/index.astro';
 
 export const blockSchemas = {
   hero: heroSchema,
@@ -24,6 +28,8 @@ export const blockSchemas = {
   'cta-banner': ctaBannerSchema,
   'image-feature': imageFeatureSchema,
   'video-feature': videoFeatureSchema,
+  'review-carousel': reviewCarouselSchema,
+  faq: faqSchema,
 } as const;
 
 export const blockComponents = {
@@ -35,6 +41,8 @@ export const blockComponents = {
   'cta-banner': CtaBannerComponent,
   'image-feature': ImageFeatureComponent,
   'video-feature': VideoFeatureComponent,
+  'review-carousel': ReviewCarouselComponent,
+  faq: FaqComponent,
 } satisfies Record<keyof typeof blockSchemas, unknown>;
 
 export type BlockType = keyof typeof blockSchemas;

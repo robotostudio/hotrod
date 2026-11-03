@@ -1,0 +1,29 @@
+---
+import Lucide from '../../components/lucide.astro';
+
+type Props = {
+  type: 'faq';
+  title: string;
+  items: { question: string; answer: string }[];
+};
+
+const { title, items } = Astro.props;
+---
+<section class="not-prose bg-background text-foreground py-20 px-6 [.prose_&]:px-0 [.prose_&]:pb-0">
+  <div class="mx-auto max-w-5xl">
+    <h2 class="text-5xl md:text-6xl font-black text-center mb-16">{title}</h2>
+    <ul class="flex flex-col gap-4">
+      {items.map((item) => (
+        <li>
+          <details class="group border-4 border-foreground">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 p-6 hover:bg-foreground hover:text-background group-open:bg-foreground group-open:text-background transition-colors [&::-webkit-details-marker]:hidden">
+              <h3 class="text-xl md:text-2xl font-black">{item.question}</h3>
+              <Lucide name="plus" class="w-8 h-8 shrink-0 motion-safe:transition-transform group-open:rotate-45" />
+            </summary>
+            <p class="p-6 text-lg font-semibold">{item.answer}</p>
+          </details>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
